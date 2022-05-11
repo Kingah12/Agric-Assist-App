@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "853876077418",
+    "project_id": "agro-assist-25003",
+    "storage_bucket": "agro-assist-25003.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853876077418:android:f549f9cbd1af00b57d2b13",
+        "android_client_info": {
+          "package_name": "com.rozu.agroassist.agro_assist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853876077418-rl9o6hbn19hvh06srblpecmsnfipl5pg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rozu.agroassist.agro_assist",
+            "certificate_hash": "c5f355382e3e6d86f6c54b19795ca02ea6bc11cd"
+          }
+        },
+        {
+          "client_id": "853876077418-mc0bvaqnskv7d2tpl52gpdn8omepanhj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx1eT30LDMiIiVTxUqUwesTDYZgpRtRJs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853876077418-mc0bvaqnskv7d2tpl52gpdn8omepanhj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
