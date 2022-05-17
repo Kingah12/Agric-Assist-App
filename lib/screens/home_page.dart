@@ -125,8 +125,17 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     category = getCategoryNews();
     getNews();
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        // final routeFromMessage = message.data["route"];
+        //     Navigator.of(context).pushNamed(routeFromMessage);
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return const LocalNews();
+        }));
+      }
+    });
 
-    FirebaseMessaging.instance.getInitialMessage();
+    //forground work
     FirebaseMessaging.onMessage.listen((messages) {
       if (messages.notification != null) {
         print(messages.notification!.body);
@@ -424,120 +433,109 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.grey.shade200,
               ),
               child: Padding(
-                padding: const EdgeInsets.only(top: 1.0, left: 10),
-                // child: ListView.builder(
-                //     itemCount: _locationDetails.length,
-                //     itemBuilder: (context, index) {
-                //       return cityDetail(
-                //         text: _locationDetails[index].currentcity,
-                //         icon: const Icon(Icons.add_photo_alternate_outlined),
-                //       );
-                //     }),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    cityDetail(
-                        text: 'Current city',
-                        icon: KoukiconsLocation(
-                          height: 30,
-                          width: 30,
-                        ),
-                        trl: widget.currentCity,
-                        colr: Colors.grey.shade600),
-                    cityDetail(
-                        text: 'Markets',
-                        icon: KoukiconsManager(
-                          height: 30,
-                          width: 30,
-                        ),
-                        trl: "loading...",
-                        colr: Colors.grey.shade600),
-                    cityDetail(
-                        text: 'Rainfall',
-                        icon: KoukiconsCloudWarning(
-                          height: 30,
-                          width: 30,
-                        ),
-                        trl: widget.currentCity,
-                        colr: Colors.grey.shade600),
-                    cityDetail(
-                        text: 'Current Temperature',
-                        icon: KoukiconsScatterPlot(
-                          height: 40,
-                          width: 40,
-                        ),
-                        trl: "20\u00B0C",
-                        colr: Colors.grey.shade600),
-                    cityDetail(
-                        text: 'Soil Type Temperature',
-                        icon: KoukiconsSpeed(
-                          height: 30,
-                          width: 30,
-                        ),
-                        trl: "Loamy Soil",
-                        colr: Colors.grey.shade600),
-                    cityDetail(
-                        text: 'Soil pH range',
-                        icon: KoukiconsWorkflow(
-                          height: 30,
-                          width: 30,
-                        ),
-                        trl: "Loamy Soil",
-                        colr: Colors.grey.shade600),
-                    cityDetail(
-                        text: 'Available Water Bodies',
-                        icon: KoukiconsCloudWarning(
-                          height: 30,
-                          width: 30,
-                        ),
-                        trl: "null",
-                        colr: Colors.red),
-                    cityDetail(
-                        text: 'Tractability',
-                        icon: KoukiconsWorkflow(
-                          height: 30,
-                          width: 30,
-                        ),
-                        trl: "null",
-                        colr: Colors.red),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // getData();
-                        // getNewsData();
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const LocationDetails();
-                        }));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0, top: 13),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
+                  padding: const EdgeInsets.only(top: 1.0, left: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      cityDetail(
+                          text: 'Current city',
+                          icon: KoukiconsLocation(
+                            height: 30,
+                            width: 30,
+                          ),
+                          trl: widget.currentCity,
+                          colr: Colors.grey.shade600),
+                      cityDetail(
+                          text: 'Markets',
+                          icon: KoukiconsManager(
+                            height: 30,
+                            width: 30,
+                          ),
+                          trl: widget.markets,
+                          colr: Colors.grey.shade600),
+                      cityDetail(
+                          text: 'Rainfall',
+                          icon: KoukiconsCloudWarning(
+                            height: 30,
+                            width: 30,
+                          ),
+                          trl: widget.currentCity,
+                          colr: Colors.grey.shade600),
+                      cityDetail(
+                          text: 'Current Temperature',
+                          icon: KoukiconsScatterPlot(
                             height: 40,
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                color: Colors.green),
-                            child: const Center(
-                              child: Text(
-                                'Check for more details here...',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
+                            width: 40,
+                          ),
+                          trl: widget.currentTemperature,
+                          colr: Colors.grey.shade600),
+                      cityDetail(
+                          text: 'Soil Type Temperature',
+                          icon: KoukiconsSpeed(
+                            height: 30,
+                            width: 30,
+                          ),
+                          trl: widget.soilType,
+                          colr: Colors.grey.shade600),
+                      cityDetail(
+                          text: 'Soil pH range',
+                          icon: KoukiconsWorkflow(
+                            height: 30,
+                            width: 30,
+                          ),
+                          trl: widget.soilPh,
+                          colr: Colors.grey.shade600),
+                      cityDetail(
+                          text: 'Available Water Bodies',
+                          icon: KoukiconsCloudWarning(
+                            height: 30,
+                            width: 30,
+                          ),
+                          trl: widget.availableWaterBodies,
+                          colr: Colors.red),
+                      cityDetail(
+                          text: 'Tractability',
+                          icon: KoukiconsWorkflow(
+                            height: 30,
+                            width: 30,
+                          ),
+                          trl: widget.tractability,
+                          colr: Colors.red),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const LocationDetails();
+                          }));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0, top: 13),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              height: 40,
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40),
+                                  color: Colors.green),
+                              child: const Center(
+                                child: Text(
+                                  'Check for more details here...',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  )),
             ),
           ),
         ],

@@ -15,151 +15,47 @@ class SelectLocationPage extends StatefulWidget {
 
 class _SelectLocationPageState extends State<SelectLocationPage> {
   String sItem = 'select location';
-  final List<String> _locations = <String>[
-    "Agbogugu",
-    "Agbudu",
-    "Amoli",
-    "Awgu",
-    "Awgunta",
-    "Ezere",
-    "Ihe",
-    "Isu-Awaa",
-    "Ituku",
-    "Mgbidi",
-    "Mgbowo",
-    "Mmaku",
-    "Nenwenta",
-    "Nkwe",
-    "Obeagu",
-    "Ogbaku",
-    "Ogugu",
-    "Owelli",
-    "Ugbo",
-    "Ugwueme",
-  ];
-  final List<LocationCityDetails> _locationDetails = <LocationCityDetails>[
-    LocationCityDetails(
-      currentcity: "Agbogugu",
-      markets: " Orio Agbogugu",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Deep clay loam soil",
-      soilPh: "3.9 - 4.6",
-      availableWaterBodies: "Nvula Agbogugu",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Amoli",
-      markets: " Nkwo Uda-amoli",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Deep clay loam soil",
-      soilPh: "4.9 - 5.9",
-      availableWaterBodies: "Anizi River",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Awgu",
-      markets: "  Orio Awgu",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Alluvial Soil",
-      soilPh: "3.6 - 5.2",
-      availableWaterBodies: "Null",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Ezere",
-      markets: " Nkwo Ezere",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Deep clay loam soil",
-      soilPh: "3.9 - 5.6",
-      availableWaterBodies: "Iyioma",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Mgbidi",
-      markets: " Nkwo Mgbidi",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Sandy loam soil",
-      soilPh: "4.7 - 6.1",
-      availableWaterBodies: "  4 catchments",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Ihe",
-      markets: " Eke Ihe",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Sandy loam soil",
-      soilPh: "4.2 - 5.4",
-      availableWaterBodies: " null",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Mgbowo",
-      markets: " Eke Mgbowo",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Alluvial soil",
-      soilPh: "4.1 - 5.9",
-      availableWaterBodies: "Ezioha dam",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Mmaku",
-      markets: " Aho Mmaku, Eke Mmaku",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "Shallow lithosol soil",
-      soilPh: "4.1 - 5.9",
-      availableWaterBodies: "Mmamu River, Omoh Mmaku",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Nkwe",
-      markets: "  Eke Nkwe",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: "shallow lithosol soil",
-      soilPh: "3.8 - 5.4",
-      availableWaterBodies: "Ezioha dam",
-      tractability: "loading...",
-    ),
-    LocationCityDetails(
-      currentcity: "Owelli",
-      markets: " Nkwo Owelli",
-      rainfall: 'loading..',
-      currentTemperature: 'loading...',
-      soilType: " Shallow lithosol soil",
-      soilPh: "3.9 - 5.6",
-      availableWaterBodies: "3 catchments",
-      tractability: "loading...",
-    ),
-  ];
+  // final List<String> _locations = <String>[
+  //   "Agbogugu",
+  //   "Agbudu",
+  //   "Amoli",
+  //   "Awgu",
+  //   "Awgunta",
+  //   "Ezere",
+  //   "Ihe",
+  //   "Isu-Awaa",
+  //   "Ituku",
+  //   "Mgbidi",
+  //   "Mgbowo",
+  //   "Mmaku",
+  //   "Nenwenta",
+  //   "Nkwe",
+  //   "Obeagu",
+  //   "Ogbaku",
+  //   "Ogugu",
+  //   "Owelli",
+  //   "Ugbo",
+  //   "Ugwueme",
+  // ];
+  int? index;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back_ios_outlined,
-            color: Colors.black,
-            size: 25,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(
+              Icons.arrow_back_ios_outlined,
+              color: Colors.black,
+              size: 25,
+            ),
           ),
         ),
-      ),
-      body: ListView.builder(
-        itemCount: _locationDetails.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
+        body: Container(
             color: Colors.white,
             child: Center(
               child: Column(
@@ -167,7 +63,7 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                 children: [
                   Container(
                       width: 200,
-                      child: Image(image: AssetImage('assets/logo.png'))),
+                      child: const Image(image: AssetImage('assets/logo.png'))),
                   const SizedBox(
                     height: 30,
                   ),
@@ -193,7 +89,7 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                         fontSize: 17),
                     isPanDown: true,
                     dropDownList:
-                        _locationDetails[index].currentcity as List<String>,
+                        locationDetailsItems.map((e) => e.currentcity).toList(),
                     elevation: 20,
                     onDropDownItemClick: (value) {
                       setState(() {
@@ -209,24 +105,21 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                         displayToast(context, 'please select a location',
                             Colors.black54, Colors.white);
                       } else {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(
-                                currentCity:
-                                    _locationDetails[index].currentcity,
-                                markets: _locationDetails[index].markets,
-                                rainfall: _locationDetails[index].rainfall,
-                                currentTemperature:
-                                    _locationDetails[index].currentTemperature,
-                                soilType: _locationDetails[index].soilType,
-                                soilPh: _locationDetails[index].soilPh,
-                                availableWaterBodies: _locationDetails[index]
-                                    .availableWaterBodies,
-                                tractability:
-                                    _locationDetails[index].tractability,
-                              ),
-                            ));
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                          return HomePage(
+                            currentCity: sItem,
+                            markets: locationDetailsItems[0].markets,
+                            rainfall: locationDetailsItems[0].rainfall,
+                            currentTemperature:
+                                locationDetailsItems[0].currentTemperature,
+                            soilType: locationDetailsItems[0].soilType,
+                            soilPh: locationDetailsItems[0].soilPh,
+                            availableWaterBodies:
+                                locationDetailsItems[0].availableWaterBodies,
+                            tractability: locationDetailsItems[0].tractability,
+                          );
+                        }));
                       }
                     },
                     child: Padding(
@@ -266,13 +159,8 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                           )),
                     ),
                   )
-                  // DropdownButton
                 ],
               ),
-            ),
-          );
-        },
-      ),
-    );
+            )));
   }
 }
