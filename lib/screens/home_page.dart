@@ -1,6 +1,7 @@
 import 'package:agro_assist/model/agro_news.dart';
 import 'package:agro_assist/model/category_model.dart';
 import 'package:agro_assist/model/category_news.dart';
+import 'package:agro_assist/model/local_notification_service.dart';
 import 'package:agro_assist/model/news_data.dart';
 import 'package:agro_assist/model/news_model.dart';
 import 'package:agro_assist/screens/chat_page_screen.dart';
@@ -136,10 +137,11 @@ class _HomePageState extends State<HomePage> {
     });
 
     //forground work
-    FirebaseMessaging.onMessage.listen((messages) {
-      if (messages.notification != null) {
-        print(messages.notification!.body);
-        print(messages.notification!.title);
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (message.notification != null) {
+        print(message.notification!.body);
+        print(message.notification!.title);
+        LocalNotificationService.display(message);
       }
     });
   }

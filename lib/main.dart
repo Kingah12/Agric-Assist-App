@@ -1,4 +1,5 @@
 import 'package:agro_assist/allProviders/settings_provider.dart';
+import 'package:agro_assist/model/local_notification_service.dart';
 import 'package:agro_assist/screens/chat_page_screen.dart';
 import 'package:agro_assist/splash_screen.dart';
 import 'package:agro_assist/testPage/profileImage.dart';
@@ -20,6 +21,7 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  LocalNotificationService.initialize();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   SharedPreferences prefs = await SharedPreferences.getInstance();
