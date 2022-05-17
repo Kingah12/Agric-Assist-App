@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'package:agro_assist/model/location_details.dart';
 import 'package:agro_assist/screens/home_page.dart';
 import 'package:agro_assist/screens/log_in.dart';
@@ -5,6 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_dropdown/awesome_dropdown.dart';
 import 'package:flutter/widgets.dart';
+
+var ld = LocationCityDetails.locationDetailsItems;
+
+extension IndexInterable<E> on Iterable<E> {
+  Iterable<T> indexedMap<T>(T Function(E element, int index) f) {
+    var index = 0;
+    return map((e) => f(e, index++));
+  }
+}
 
 class SelectLocationPage extends StatefulWidget {
   const SelectLocationPage({Key? key}) : super(key: key);
@@ -15,31 +25,20 @@ class SelectLocationPage extends StatefulWidget {
 
 class _SelectLocationPageState extends State<SelectLocationPage> {
   String sItem = 'select location';
-  // final List<String> _locations = <String>[
-  //   "Agbogugu",
-  //   "Agbudu",
-  //   "Amoli",
-  //   "Awgu",
-  //   "Awgunta",
-  //   "Ezere",
-  //   "Ihe",
-  //   "Isu-Awaa",
-  //   "Ituku",
-  //   "Mgbidi",
-  //   "Mgbowo",
-  //   "Mmaku",
-  //   "Nenwenta",
-  //   "Nkwe",
-  //   "Obeagu",
-  //   "Ogbaku",
-  //   "Ogugu",
-  //   "Owelli",
-  //   "Ugbo",
-  //   "Ugwueme",
-  // ];
-  int? index;
+  List<String> newLocationDetails = <String>[];
+  int index = 0;
+  List<LocationCityDetails> lds = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    LocationCityDetails.locationDetailsItems = lds;
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(ld.map((element) => element.id).toString());
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -88,8 +87,9 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                         fontWeight: FontWeight.bold,
                         fontSize: 17),
                     isPanDown: true,
-                    dropDownList:
-                        locationDetailsItems.map((e) => e.currentcity).toList(),
+                    dropDownList: ld
+                        .indexedMap((element, index) => element.currentcity)
+                        .toList(),
                     elevation: 20,
                     onDropDownItemClick: (value) {
                       setState(() {
@@ -109,15 +109,7 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                             MaterialPageRoute(builder: (context) {
                           return HomePage(
                             currentCity: sItem,
-                            markets: locationDetailsItems[0].markets,
-                            rainfall: locationDetailsItems[0].rainfall,
-                            currentTemperature:
-                                locationDetailsItems[0].currentTemperature,
-                            soilType: locationDetailsItems[0].soilType,
-                            soilPh: locationDetailsItems[0].soilPh,
-                            availableWaterBodies:
-                                locationDetailsItems[0].availableWaterBodies,
-                            tractability: locationDetailsItems[0].tractability,
+                            index: index,
                           );
                         }));
                       }

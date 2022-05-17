@@ -1,6 +1,7 @@
 import 'package:agro_assist/model/agro_news.dart';
 import 'package:agro_assist/model/category_model.dart';
 import 'package:agro_assist/model/category_news.dart';
+import 'package:agro_assist/model/local_notification_service.dart';
 import 'package:agro_assist/model/news_data.dart';
 import 'package:agro_assist/model/news_model.dart';
 import 'package:agro_assist/screens/chat_page_screen.dart';
@@ -10,6 +11,7 @@ import 'package:agro_assist/screens/news_page.dart';
 // import 'package:agro_assist/screens/seetings_page.dart';
 import 'package:agro_assist/screens/sign_up.dart';
 import 'package:agro_assist/screens/timeline_screen.dart';
+import 'package:agro_assist/screens/welcome_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,31 +23,34 @@ import 'package:koukicons/speed.dart';
 import 'package:koukicons/cloudWarning.dart';
 import 'package:koukicons/workflow.dart';
 import '../model/location_details.dart';
+import '../select_location_page.dart';
 import '../splash_screen.dart';
 import 'category_news.dart';
 import 'location_details.dart';
 
 class HomePage extends StatefulWidget {
-  final String currentCity;
-  final String markets;
-  final String rainfall;
-  final String currentTemperature;
-  final String soilType;
-  final String soilPh;
-  final String availableWaterBodies;
-  final String tractability;
+  final dynamic currentCity;
+  final int index;
+  // final dynamic markets;
+  // final dynamic rainfall;
+  // final dynamic currentTemperature;
+  // final dynamic soilType;
+  // final dynamic soilPh;
+  // final dynamic availableWaterBodies;
+  // final dynamic tractability;
 
-  const HomePage(
-      {Key? key,
-      required this.currentCity,
-      required this.markets,
-      required this.rainfall,
-      required this.currentTemperature,
-      required this.soilType,
-      required this.soilPh,
-      required this.availableWaterBodies,
-      required this.tractability})
-      : super(key: key);
+  const HomePage({
+    Key? key,
+    required this.currentCity,
+    required this.index,
+    // required this.markets,
+    // required this.rainfall,
+    // required this.currentTemperature,
+    // required this.soilType,
+    // required this.soilPh,
+    // required this.availableWaterBodies,
+    // required this.tractability
+  }) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -136,10 +141,11 @@ class _HomePageState extends State<HomePage> {
     });
 
     //forground work
-    FirebaseMessaging.onMessage.listen((messages) {
-      if (messages.notification != null) {
-        print(messages.notification!.body);
-        print(messages.notification!.title);
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (message.notification != null) {
+        print(message.notification!.body);
+        print(message.notification!.title);
+        LocalNotificationService.display(message);
       }
     });
   }
@@ -221,13 +227,14 @@ class _HomePageState extends State<HomePage> {
                             MaterialPageRoute(builder: (context) {
                           return HomePage(
                             currentCity: widget.currentCity,
-                            markets: widget.markets,
-                            rainfall: widget.rainfall,
-                            currentTemperature: widget.currentTemperature,
-                            soilType: widget.soilType,
-                            soilPh: widget.soilPh,
-                            availableWaterBodies: widget.availableWaterBodies,
-                            tractability: widget.tractability,
+                            index: widget.index,
+                            // markets: widget.markets,
+                            // rainfall: widget.rainfall,
+                            // currentTemperature: widget.currentTemperature,
+                            // soilType: widget.soilType,
+                            // soilPh: widget.soilPh,
+                            // availableWaterBodies: widget.availableWaterBodies,
+                            // tractability: widget.tractability,
                           );
                         }));
                       },
@@ -296,6 +303,12 @@ class _HomePageState extends State<HomePage> {
               style: kTextStyle,
             ),
             const Spacer(),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => WelcomePage()));
+                },
+                icon: Icon(CupertinoIcons.arrow_left_circle))
             // CircleAvatar(backgroundImage: NetworkImage(url),),
           ],
         );
@@ -451,7 +464,7 @@ class _HomePageState extends State<HomePage> {
                             height: 30,
                             width: 30,
                           ),
-                          trl: widget.markets,
+                          trl: ld[widget.index].markets,
                           colr: Colors.grey.shade600),
                       cityDetail(
                           text: 'Rainfall',
@@ -467,7 +480,7 @@ class _HomePageState extends State<HomePage> {
                             height: 40,
                             width: 40,
                           ),
-                          trl: widget.currentTemperature,
+                          trl: ld[widget.index].currentTemperature,
                           colr: Colors.grey.shade600),
                       cityDetail(
                           text: 'Soil Type Temperature',
@@ -475,7 +488,7 @@ class _HomePageState extends State<HomePage> {
                             height: 30,
                             width: 30,
                           ),
-                          trl: widget.soilType,
+                          trl: ld[widget.index].soilType,
                           colr: Colors.grey.shade600),
                       cityDetail(
                           text: 'Soil pH range',
@@ -483,7 +496,7 @@ class _HomePageState extends State<HomePage> {
                             height: 30,
                             width: 30,
                           ),
-                          trl: widget.soilPh,
+                          trl: ld[widget.index].soilPh,
                           colr: Colors.grey.shade600),
                       cityDetail(
                           text: 'Available Water Bodies',
@@ -491,7 +504,7 @@ class _HomePageState extends State<HomePage> {
                             height: 30,
                             width: 30,
                           ),
-                          trl: widget.availableWaterBodies,
+                          trl: ld[widget.index].availableWaterBodies,
                           colr: Colors.red),
                       cityDetail(
                           text: 'Tractability',
@@ -499,7 +512,7 @@ class _HomePageState extends State<HomePage> {
                             height: 30,
                             width: 30,
                           ),
-                          trl: widget.tractability,
+                          trl: ld[widget.index].tractability,
                           colr: Colors.red),
                       const SizedBox(
                         height: 10,
