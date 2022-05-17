@@ -10,6 +10,10 @@ class LocationDetails extends StatefulWidget {
 class _LocationDetailsState extends State<LocationDetails> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const Scaffold(
+      body: Center(
+        child: Text('Details'),
+      ),
+    );
   }
 }

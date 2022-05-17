@@ -65,7 +65,8 @@ dependencies:
   provider: ^6.0.2
   country_code_picker: ^2.0.2
   url_launcher: ^6.0.20
-  circular_bottom_navigation: ^2.0.0
+#  cupertino_list_tile: ^0.2.1
+
 
 flutter_icons:
   android: "assets/icon.png"

@@ -244,45 +244,13 @@ class _LocalNewsState extends State<LocalNews> {
           ],
         ),
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Flexible(
-              child: Image(
-                image: AssetImage('assets/icon.png'),
-              ),
-            ),
-            SizedBox(
-              height: 80,
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Agro Assist Local news are coming from 6th of may 2022...',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(
-              height: 200,
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'There will be daily updates on news from all over Nigeria, and particularly farming and technologies to pioneer farming.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.black38,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height / 3,
+          )
+        ],
       ),
     );
   }

@@ -11,6 +11,7 @@ import 'package:agro_assist/screens/news_page.dart';
 import 'package:agro_assist/screens/sign_up.dart';
 import 'package:agro_assist/screens/timeline_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:koukicons/location.dart';
@@ -19,13 +20,32 @@ import 'package:koukicons/scatterPlot.dart';
 import 'package:koukicons/speed.dart';
 import 'package:koukicons/cloudWarning.dart';
 import 'package:koukicons/workflow.dart';
+import '../model/location_details.dart';
 import '../splash_screen.dart';
 import 'category_news.dart';
 import 'location_details.dart';
 
 class HomePage extends StatefulWidget {
-  final String location;
-  const HomePage({Key? key, required this.location}) : super(key: key);
+  final String currentCity;
+  final String markets;
+  final String rainfall;
+  final String currentTemperature;
+  final String soilType;
+  final String soilPh;
+  final String availableWaterBodies;
+  final String tractability;
+
+  const HomePage(
+      {Key? key,
+      required this.currentCity,
+      required this.markets,
+      required this.rainfall,
+      required this.currentTemperature,
+      required this.soilType,
+      required this.soilPh,
+      required this.availableWaterBodies,
+      required this.tractability})
+      : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -105,6 +125,14 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     category = getCategoryNews();
     getNews();
+
+    FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onMessage.listen((messages) {
+      if (messages.notification != null) {
+        print(messages.notification!.body);
+        print(messages.notification!.title);
+      }
+    });
   }
 
   getNews() async {
@@ -182,7 +210,16 @@ class _HomePageState extends State<HomePage> {
                             Colors.black38, Colors.white);
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
-                          return HomePage(location: widget.location);
+                          return HomePage(
+                            currentCity: widget.currentCity,
+                            markets: widget.markets,
+                            rainfall: widget.rainfall,
+                            currentTemperature: widget.currentTemperature,
+                            soilType: widget.soilType,
+                            soilPh: widget.soilPh,
+                            availableWaterBodies: widget.availableWaterBodies,
+                            tractability: widget.tractability,
+                          );
                         }));
                       },
                       child: const Icon(
@@ -388,6 +425,14 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(top: 1.0, left: 10),
+                // child: ListView.builder(
+                //     itemCount: _locationDetails.length,
+                //     itemBuilder: (context, index) {
+                //       return cityDetail(
+                //         text: _locationDetails[index].currentcity,
+                //         icon: const Icon(Icons.add_photo_alternate_outlined),
+                //       );
+                //     }),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -397,7 +442,7 @@ class _HomePageState extends State<HomePage> {
                           height: 30,
                           width: 30,
                         ),
-                        trl: widget.location,
+                        trl: widget.currentCity,
                         colr: Colors.grey.shade600),
                     cityDetail(
                         text: 'Markets',
@@ -413,7 +458,7 @@ class _HomePageState extends State<HomePage> {
                           height: 30,
                           width: 30,
                         ),
-                        trl: widget.location,
+                        trl: widget.currentCity,
                         colr: Colors.grey.shade600),
                     cityDetail(
                         text: 'Current Temperature',
@@ -462,7 +507,10 @@ class _HomePageState extends State<HomePage> {
                       onTap: () {
                         // getData();
                         // getNewsData();
-                        const LocationDetails();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const LocationDetails();
+                        }));
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0, top: 13),

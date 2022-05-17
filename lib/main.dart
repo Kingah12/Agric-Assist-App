@@ -1,4 +1,5 @@
 import 'package:agro_assist/allProviders/settings_provider.dart';
+import 'package:agro_assist/screens/chat_page_screen.dart';
 import 'package:agro_assist/splash_screen.dart';
 import 'package:agro_assist/testPage/profileImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 
+// enum Brightness {
+//   brightness.dark,
+// brightness.light,
+// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -39,10 +44,13 @@ class MyApp extends StatelessWidget {
                 firebaseFirestore: this.firebaseFirestore,
                 firebaseStorage: this.firebaseStorage))
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
+        theme: ThemeData(brightness: Brightness.light),
         debugShowCheckedModeBanner: false,
         title: 'Aggro assist',
-        home: MySplashScreen(),
+        home:
+            // ChatPageScreen(),
+            MySplashScreen(),
       ),
     );
   }
