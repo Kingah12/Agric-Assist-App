@@ -428,28 +428,36 @@ class _SignUpState extends State<SignUp> {
 
     //adding user to firestore
     if (_user != null) {
-      users.add({
-        "email": _email.text.trim(),
-        "password": _password.text.trim(),
-        "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
-        "nickname": _nickName.text.trim(),
-        "status": 'unavailable',
-        FirestoreConstants.photoUrl: timeLineImage!.toString(),
-        FirestoreConstants.id: _user.uid,
-      }).then((value) {
-        //display success signedUp
-        displayToast(context, 'You have signed Up successfully', Colors.green,
-            Colors.white);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return const WelcomePage();
-          }),
-        );
-      }).catchError((e) {
-        Navigator.pop(context);
-        displayToast(context, '${e.code}', Colors.red, Colors.white);
-      });
+      users
+          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .limit(1)
+          .get()
+          .then((QuerySnapshot snapShot) {
+        if (snapShot.docs.isEmpty) {
+          users.add({
+            "email": _email.text.trim(),
+            "password": _password.text.trim(),
+            "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
+            "nickname": _nickName.text.trim(),
+            "status": 'online',
+            FirestoreConstants.photoUrl: timeLineImage!.toString(),
+            'uid': FirebaseAuth.instance.currentUser!.uid,
+          }).then((value) {
+            //display success signedUp
+            displayToast(context, 'You have signed Up successfully',
+                Colors.green, Colors.white);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return const WelcomePage();
+              }),
+            );
+          }).catchError((e) {
+            Navigator.pop(context);
+            displayToast(context, '${e.code}', Colors.red, Colors.white);
+          });
+        }
+      }).catchError((error) {});
     } else {
       Navigator.pop(context);
       displayToast(

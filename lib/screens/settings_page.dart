@@ -1,151 +1,137 @@
-import 'dart:io';
-import 'package:agro_assist/allProviders/settings_provider.dart';
-import 'package:agro_assist/model/firestore_constants.dart';
-import 'package:agro_assist/model/user_chat.dart';
-import 'package:agro_assist/screens/log_in.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
-
-  @override
-  _SettingsPageState createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  TextEditingController? controllerNickName;
-  TextEditingController? controllerAboutMe;
-
-  String dialCodeDigits = "+00";
-  final TextEditingController _controller = TextEditingController();
-  String id = "";
-  String nickname = "";
-  String aboutMe = "";
-  String photoUrl = "";
-  String phoneNumber = "";
-
-  bool isLoading = false;
-  File? avatarImageFile;
-  late SettingsProvider settingsProvider;
-  final FocusNode focusNodeNickname = FocusNode();
-  final FocusNode focusNodeAboutMe = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    settingsProvider = context.read<SettingsProvider>();
-    readLocal();
-  }
-
-  readLocal() {
-    setState(() {
-      id = settingsProvider.getPref(FirestoreConstants.id) ?? "";
-      nickname = settingsProvider.getPref(FirestoreConstants.nickname) ?? "";
-      aboutMe = settingsProvider.getPref(FirestoreConstants.aboutme) ?? "";
-      photoUrl = settingsProvider.getPref(FirestoreConstants.photoUrl) ?? "";
-      phoneNumber =
-          settingsProvider.getPref(FirestoreConstants.phoneNumber) ?? "";
-    });
-    controllerNickName = TextEditingController(text: nickname);
-    controllerAboutMe = TextEditingController(text: aboutMe);
-  }
-
-  Future getImage() async {
-    ImagePicker imagePicker = ImagePicker();
-    PickedFile? pickedFile = await imagePicker
-        .getImage(source: ImageSource.gallery)
-        .catchError((err) {displayToast(context, '${err}', Colors.black, Colors.white)});
-
-    File? image;
-    if(pickedFile != null ){
-      image = File(pickedFile.path);
-    } if(image != null){
-      setState(() {
-      avatarImageFile = image;
-      isLoading = true;
-    });}
-    upLoadFile();
-  }
-
-  Future upLoadFile()async{
-     String fileName = id;
-     UploadTask uploadTask = settingsProvider.uploadFile(avatarImageFile!, fileName);
-     try{TaskSnapshot snapshot = await uploadTask;
-     photoUrl = await snapshot.ref.getDownloadURL();
-     UserChat updateInfo = UserChat(id: id, photoUrl: photoUrl,
-         nickname: nickname, aboutMe: aboutMe, phoneNumber: phoneNumber);
-     settingsProvider.updateDataFirestore(FirestoreConstants.pathUserCollection, id, updateInfo.toJson()).then((data) async{
-       await settingsProvider.setPref(FirestoreConstants.photoUrl, photoUrl);
-       setState(() {
-         isLoading= false;
-       });
-     }).catchError((err){setState(() {
-       isLoading=false;
-     });displayToast(context, err.toString(), Colors.red
-         , Colors.white);}
-     );
-
-     }on FirebaseException catch(e){
-       setState(() {
-         isLoading= false;
-       });displayToast(context, e.message ?? e.toString(), Colors.black, Colors.white);
-     }
-
-  }
-
-  void handleUpdateData (){
-    focusNodeNickname.unfocus();
-    focusNodeAboutMe.unfocus();
-    setState(() {
-      isLoading = true;
-      if(dialCodeDigits != "+00" &&_controller.text != ""){
-        phoneNumber = dialCodeDigits +_controller.text.toString();
-      }
-    });UserChat updateInfo = UserChat(id: id,
-        photoUrl: photoUrl, nickname: nickname, aboutMe: aboutMe, phoneNumber: phoneNumber);
-    settingsProvider.updateDataFirestore(FirestoreConstants.pathUserCollection, id, updateInfo.toJson()).then((data) async{
-      await settingsProvider.setPref(FirestoreConstants.nickname, nickname);
-      await settingsProvider.setPref(FirestoreConstants.aboutme, aboutMe);
-      await settingsProvider.setPref(FirestoreConstants.photoUrl, photoUrl);
-      await settingsProvider.setPref(FirestoreConstants.phoneNumber, phoneNumber  );
-      setState(() {
-        isLoading = false;
-      });
-      displayToast(context, "sucess", Colors.green, Colors.white);
-    }).catchError((err){setState(() {
-      isLoading= false;
-    });displayToast(context, err.toString(), Colors.red, Colors.white);});
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_outlined,
-            color: Colors.black,
-          ),
-        ),
-        title: const Text(
-          'Settings',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-      ),
-      body: Container(
-          child: const Center(
-        child: Text('This is the settins page'),
-      )),
-    );
-  }
-}
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:six_cash/view/new_screens/wallet_tabs/funding_options/request_from_a_riend/bitsave_user_request.dart';
+// import 'package:six_cash/view/new_screens/wallet_tabs/funding_options/request_from_a_riend/friend_identity.dart';
+// import 'package:six_cash/view/new_screens/wallet_tabs/funding_usd_wallet_page.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+//
+// import 'alertPage.dart';
+//
+// bool _show = false;
+//
+// class LoanApplication extends StatefulWidget {
+//   const LoanApplication({Key key}) : super(key: key);
+//
+//   @override
+//   State<LoanApplication> createState() => _LoanApplicationState();
+// }
+//
+// class _LoanApplicationState extends State<LoanApplication> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         body: Stack(
+//       children: [
+//         BackGroundColr(
+//           child: Container(
+//             padding: EdgeInsets.only(left: 16, right: 16, top: 35),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 BackButtons(),
+//                 BoldTextTitle(
+//                   data: 'Apply for a Loan',
+//                 ),
+//                 Padding(
+//                   padding: const EdgeInsets.only(left: 10.0),
+//                   child: Text(
+//                     'Taking out a loan means you can put your plans into action much earlier',
+//                     style: TextStyle(
+//                         color: Colors.grey, fontWeight: FontWeight.w300),
+//                   ),
+//                 ),
+//                 Row(
+//                   children: [
+//                     Expanded(
+//                       child: Cont32(
+//                         title: 'Take a\nLoan',
+//                         subtitle: 'Borrow money\nto meet your\nneeds',
+//                         avatar: CircleAvatar(
+//                           backgroundColor: Colors.pink,
+//                         ),
+//                       ),
+//                     ),
+//                     SizedBox(width: 7),
+//                     Expanded(
+//                       child: Cont32(
+//                         title: 'Your Loan\nHistory',
+//                         subtitle: 'Monitor and know\nthe status of your\nloan today',
+//                         avatar: CircleAvatar(
+//                           backgroundColor: Colors.pink[200],
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 Padding(
+//                   padding: const EdgeInsets.only(top: 80.0),
+//                   child: Text(
+//                     'Try our loan calculator to get estimates and secure the best option for your needs and wants',
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+//                   ),
+//                 ),
+//                 GestureDetector(
+//                   onTap: () {
+//                     _bottomSheet();
+//                   },
+//                   child: Container(
+//                     margin: EdgeInsets.symmetric(vertical: 20),
+//                     height: 55,
+//                     width: double.infinity,
+//                     decoration: BoxDecoration(
+//                         border: Border.all(width: 0.2, color: Colors.pink),
+//                         color: Colors.white,
+//                         borderRadius: BorderRadius.circular(12)),
+//                     child: Center(
+//                       child: Text(
+//                         'Loan Calculator',
+//                         style: TextStyle(
+//                             color: Colors.pink, fontWeight: FontWeight.w400),
+//                         textAlign: TextAlign.center,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//         _show == false ? Container() : AlertPage(),
+//       ],
+//     ));
+//   }
+//
+//   Future<dynamic> _bottomSheet() {
+//     return showModalBottomSheet(
+//         context: context,
+//         builder: (context) {
+//           return Container(
+//               color: Color(0xFF757575),
+//               child: SingleChildScrollView(
+//                 child: Container(
+//                   height: 700,
+//                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+//                   alignment: Alignment.center,
+//                   decoration: BoxDecoration(
+//                       color: Colors.white,
+//                       borderRadius: BorderRadius.only(
+//                           topRight: Radius.circular(20),
+//                           topLeft: Radius.circular(20))),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Row(
+//                         children: [
+//                           Text(
+//                             'Loan Calculator',
+//                             style: TextStyle(
+//                                 fontWeight: FontWeight.w400, fontSize: 23),
+//                           ),
+//                           Spacer(),
+//                           GestureDetector(
+//                             onTap: () {
+//                               Navigator.pop(context);
+//                             },
+//                             child: CircleAvatar(
+//

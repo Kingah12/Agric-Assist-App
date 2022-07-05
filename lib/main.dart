@@ -1,8 +1,4 @@
 import 'package:agro_assist/allProviders/settings_provider.dart';
-import 'package:agro_assist/model/local_notification_service.dart';
-import 'package:agro_assist/screens/chat_page_screen.dart';
-import 'package:agro_assist/splash_screen.dart';
-import 'package:agro_assist/testPage/profileImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,9 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:splash_screen_view/SplashScreenView.dart';
 
-///when app is in background
+import 'services/local_notifications.dart';
+import 'splash_screen.dart';
+
+///receive message when app is in background solution for onn message
 Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.data.toString());
   print(message.notification!.title);
@@ -56,7 +54,8 @@ class MyApp extends StatelessWidget {
         title: 'Aggro assist',
         home:
             // ChatPageScreen(),
-            MySplashScreen(),
+            const MySplashScreen(),
+            // const MyRichApp(),
       ),
     );
   }

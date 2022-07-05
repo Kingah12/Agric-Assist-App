@@ -189,8 +189,10 @@
 //   }
 // }
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../splash_screen.dart';
 import 'chat_page_tab_screens/chats.dart';
 import 'chat_page_tab_screens/calls.dart';
 import 'chat_page_tab_screens/people.dart';
@@ -208,9 +210,10 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
   var screens = <Widget>[
     const Chats(),
     Calls(),
-    const People(),
-    const Settings(),
+    People(),
+    const ChatSettings(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

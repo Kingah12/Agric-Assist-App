@@ -1,7 +1,7 @@
 // import 'package:agro_assist/model/article_view.dart';
 // import 'package:agro_assist/model/category_article.dart';
 // import 'package:agro_assist/model/category_model.dart';
-// import 'package:agro_assist/model/category_news.dart';
+// import 'package:agro_assist/model/local_newscategory.dart';
 // import 'package:agro_assist/model/news_data.dart';
 // import 'package:agro_assist/model/news_model.dart';
 // import 'package:cached_network_image/cached_network_image.dart';

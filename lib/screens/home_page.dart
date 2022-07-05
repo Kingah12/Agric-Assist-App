@@ -1,55 +1,39 @@
+import 'dart:convert';
+
 import 'package:agro_assist/model/agro_news.dart';
 import 'package:agro_assist/model/category_model.dart';
 import 'package:agro_assist/model/category_news.dart';
-import 'package:agro_assist/model/local_notification_service.dart';
 import 'package:agro_assist/model/news_data.dart';
 import 'package:agro_assist/model/news_model.dart';
 import 'package:agro_assist/screens/chat_page_screen.dart';
-import 'package:agro_assist/screens/chat_screen.dart';
 import 'package:agro_assist/screens/log_in.dart';
-import 'package:agro_assist/screens/news_page.dart';
-// import 'package:agro_assist/screens/seetings_page.dart';
-import 'package:agro_assist/screens/sign_up.dart';
 import 'package:agro_assist/screens/timeline_screen.dart';
 import 'package:agro_assist/screens/welcome_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:koukicons/cloudWarning.dart';
 import 'package:koukicons/location.dart';
 import 'package:koukicons/manager.dart';
 import 'package:koukicons/scatterPlot.dart';
 import 'package:koukicons/speed.dart';
-import 'package:koukicons/cloudWarning.dart';
 import 'package:koukicons/workflow.dart';
-import '../model/location_details.dart';
+
 import '../select_location_page.dart';
+import '../services/local_notifications.dart';
 import '../splash_screen.dart';
-import 'category_news.dart';
+import 'Local_news_pages/local_news_category.dart';
 import 'location_details.dart';
 
 class HomePage extends StatefulWidget {
   final dynamic currentCity;
-  final int index;
-  // final dynamic markets;
-  // final dynamic rainfall;
-  // final dynamic currentTemperature;
-  // final dynamic soilType;
-  // final dynamic soilPh;
-  // final dynamic availableWaterBodies;
-  // final dynamic tractability;
 
   const HomePage({
     Key? key,
     required this.currentCity,
-    required this.index,
-    // required this.markets,
-    // required this.rainfall,
-    // required this.currentTemperature,
-    // required this.soilType,
-    // required this.soilPh,
-    // required this.availableWaterBodies,
-    // required this.tractability
   }) : super(key: key);
 
   @override
@@ -59,108 +43,259 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<NewsArticle> newsArticle = <NewsArticle>[];
   List<NewsArticle> newsCategory = <NewsArticle>[];
-  // late String newsApiUrl =
-  //     "https://newsapi.org/v2/top-headlines?country=ng&category=business&apiKey=n$newsAPiKey";
-  // // 'https://newsapi.org/v2/top-headlines?country=ng&category=business&apiKey=$newsAPiKey';
-  // String newsAPiKey = '0e9af026cd5d42b8a45717b4d5c10387';
-  // String newsMediaApikey = 'ac0e009ec4bed092723254e9d1e3e2bc';
-  // String apiKey = '939fe473dbe4e7ee508a038ce5ed43a5';
-  // late String newsMediaUrl =
-  //     'http://api.mediastack.com/v1/news?access_key=$newsMediaApikey&country=ng';
-
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   getPermission();
-  //   getLocation();
-  // }
-  //
-  // Future<Position?> getPermission() async {
-  //   LocationPermission permission;
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.deniedForever) {
-  //       displayToast(context, 'please check permissions status', Colors.black38,
-  //           Colors.white);
-  //       return Future.error('Location Not Available');
-  //     }
-  //   } else {
-  //     throw Exception('Error');
-  //   }
-  // }
-  //
-  // void getLocation() async {
-  //   Position newPosition = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  //   latitude = newPosition.latitude;
-  //   longitude = newPosition.longitude;
-  // }
-  //
-  // void getData() async {
-  //   final url =
-  //       'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey';
-  //
-  //   http.Response response = await http.get(Uri.parse(url));
-  //   // print(response.statusCode);
-  //   if (response.statusCode == 200) {
-  //     String data = response.body;
-  //     var temperature = jsonDecode(data)['main']['temp'];
-  //     var wederDesc = jsonDecode(data)['cod'];
-  //     var cityName = jsonDecode(data)['name'];
-  //     print(temperature);
-  //     print(wederDesc);
-  //     print(cityName);
-  //   } else {
-  //     displayToast(
-  //         context,
-  //         'reload the app again theres an error!: ${response.statusCode}',
-  //         Colors.black45,
-  //         Colors.white);
-  //   }
-  // }
   List<CategoryModel> category = getCategoryNews();
-
-  bool _loadng = true;
+  late String _cityName = 'Ezere';
+  double? latitude;
+  double? longitude;
+  bool _loading = true;
+  int index = 0;
+  dynamic? temperature;
+  dynamic? condition;
+  int? year1;
+  int? month1;
+  int? day1;
+  double? soilMoistureData;
+  String tractability = "No";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _determinePosition();
+
+    getPosition();
+
     category = getCategoryNews();
     getNews();
+
+    ///gives you the message on which user taps on it
+    ///and it openedthe app from terminated state
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         // final routeFromMessage = message.data["route"];
-        //     Navigator.of(context).pushNamed(routeFromMessage);
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const LocalNews();
+          return LocalNews();
         }));
       }
     });
 
-    //forground work
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    ///forground work
+    FirebaseMessaging.onMessage.listen((message) {
       if (message.notification != null) {
-        print(message.notification!.body);
-        print(message.notification!.title);
         LocalNotificationService.display(message);
       }
     });
+
+    ///this only works when the app is in background but opened and user taps
+    ///on the notification
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      final routeFromeMessage = message.data['route'];
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return LocalNews();
+      }));
+    });
+  }
+
+  void checkForIndex() {
+    setState(() {
+      _cityName = widget.currentCity;
+    });
+
+    if (_cityName == "Agbogugu") {
+      return setState(() {
+        index = 0;
+      });
+    } else if (_cityName == "Amoli") {
+      return setState(() {
+        index = 1;
+      });
+    } else if (_cityName == "Awgu") {
+      return setState(() {
+        index = 2;
+      });
+    } else if (_cityName == "Ezere") {
+      return setState(() {
+        index = 3;
+      });
+    } else if (_cityName == "Mgbidi") {
+      return setState(() {
+        index = 4;
+      });
+    } else if (_cityName == "Ihe") {
+      return setState(() {
+        index = 5;
+      });
+    } else if (_cityName == "Mgbowo") {
+      return setState(() {
+        index = 6;
+      });
+    } else if (_cityName == "Mmaku") {
+      return setState(() {
+        index = 7;
+      });
+    } else if (_cityName == "Nkwe") {
+      return setState(() {
+        index = 8;
+      });
+    } else {
+      return setState(() {
+        index = 0;
+      });
+    }
+  }
+
+  Future<Position?> _determinePosition() async {
+    // Determine the current position of the device.
+    ///
+    /// When the location services are not enabled or permissions
+    /// are denied the `Future` will return an error.
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error(() {
+        displayToast(context, "please turn on your location and try again",
+            Colors.black, Colors.white);
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return const WelcomePage();
+        }));
+      });
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error(() {
+          displayToast(context, 'please check your location', Colors.black,
+              Colors.white);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
+            return const WelcomePage();
+          }));
+        });
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(() {
+        displayToast(
+            context, 'please check your location', Colors.black, Colors.white);
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return const WelcomePage();
+        }));
+      });
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position? position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    latitude = position.latitude;
+    longitude = position.longitude;
+    return position;
+  }
+
+  getPosition() async {
+    // _loading = false;
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    latitude = position.latitude;
+    longitude = position.longitude;
+    checkDate();
+    getWeatherBitData();
+    getSoilMoistureData();
+  }
+
+  void checkDate() {
+    // int month = DateTime.utc(2022, []) as int;
+    int month = DateTime.now().month;
+    int year = DateTime.now().year;
+    int day = DateTime.now().day;
+    setState(() {
+      year1 = year;
+      month1 = month;
+      day1 = day;
+    });
+  }
+
+  getWeatherBitData() async {
+    String apiKey = '912fefefec9f400b97c135bb5928d6c6';
+    String weatherDataUrl =
+        'https://api.weatherbit.io/v2.0/current?lat=$latitude&lon=$longitude&key=$apiKey';
+    http.Response response = await http.get(Uri.parse(weatherDataUrl));
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+      setState(() {
+        temperature = jsonDecode(data)['data'][0]['temp'];
+        condition = jsonDecode(data)['data'][0]['weather']['code'];
+        _loading = false;
+      });
+    } else {
+      setState(() {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return const WelcomePage();
+        }));
+      });
+      displayToast(
+          context, 'there is a bad network', Colors.black, Colors.white);
+    }
+  }
+
+  getSoilMoistureData() async {
+    String apikey = '912fefefec9f400b97c135bb5928d6c6';
+    String url =
+        'https://api.weatherbit.io/v2.0/history/agweather?lat=$latitude&lon=$longitude&start_date=2022-06-10&end_date=$year1-$month1-$day1&key=$apikey';
+    http.Response response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      String data = response.body;
+
+      var soilM = jsonDecode(data)['data'][0]['v_soilm_0_10cm'];
+      setState(() {
+        soilMoistureData = soilM;
+      });
+    }
+    print(response.statusCode);
+    setTractability();
+    print('this is the soilmoisture data: $soilMoistureData');
+  }
+
+  setTractability() {
+    if (soilMoistureData! >= 0.6008) {
+      setState(() {
+        tractability = "No";
+      });
+    } else {
+      setState(() {
+        tractability = 'Yes';
+      });
+    }
   }
 
   getNews() async {
     NewsData newsClass = NewsData();
     await newsClass.getNewsArticle();
     newsArticle = newsClass.news.cast<NewsArticle>();
-    setState(() {
-      _loadng = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    checkForIndex();
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -207,13 +342,14 @@ class _HomePageState extends State<HomePage> {
             color: Colors.green,
           ),
           onPressed: () {
-            // Navigator.push(context, MaterialPageRoute(builder: (context) {
-            //   return const SettingsPage();
-            // }));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) {
+              return const WelcomePage();
+            }));
           },
           elevation: 12,
         ),
-        body: _loadng == true
+        body: _loading == true
             ? Stack(
                 children: [
                   Positioned(
@@ -227,14 +363,6 @@ class _HomePageState extends State<HomePage> {
                             MaterialPageRoute(builder: (context) {
                           return HomePage(
                             currentCity: widget.currentCity,
-                            index: widget.index,
-                            // markets: widget.markets,
-                            // rainfall: widget.rainfall,
-                            // currentTemperature: widget.currentTemperature,
-                            // soilType: widget.soilType,
-                            // soilPh: widget.soilPh,
-                            // availableWaterBodies: widget.availableWaterBodies,
-                            // tractability: widget.tractability,
                           );
                         }));
                       },
@@ -265,19 +393,22 @@ class _HomePageState extends State<HomePage> {
             : Builder(builder: (context) {
                 return SafeArea(
                   child: ListView(
-                    physics: const ClampingScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      const SizedBox(height: 10),
-                      title(),
-                      const SizedBox(height: 4),
-                      newsText(),
-                      const SizedBox(height: 7),
-                      agroSlider(),
-                      const SizedBox(height: 50),
-                      locationDetails(),
-                    ],
-                  ),
+                      physics: const ClampingScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      children: [
+                        Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            title(),
+                            const SizedBox(height: 4),
+                            newsText(),
+                            const SizedBox(height: 7),
+                            agroSlider(),
+                            const SizedBox(height: 50),
+                            locationDetails(),
+                          ],
+                        )
+                      ]),
                 );
               }),
       ),
@@ -342,7 +473,7 @@ class _HomePageState extends State<HomePage> {
             stuff: 'chat',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ChatPage();
+                return const ChatPageScreen();
                 // return ChatPage();
               }));
             },
@@ -353,7 +484,7 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const LocalNews();
+              return LocalNews();
             }));
           },
         )
@@ -427,7 +558,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 3.0, vertical: 3),
             child: Text(
               'Agro Details',
               style: TextStyle(
@@ -436,143 +567,132 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 18),
             ),
           ),
-          Material(
-            borderRadius: BorderRadius.circular(50),
-            elevation: 10,
-            child: Container(
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.grey.shade200,
-              ),
-              child: Padding(
-                  padding: const EdgeInsets.only(top: 1.0, left: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      cityDetail(
-                          text: 'Current city',
-                          icon: KoukiconsLocation(
-                            height: 30,
-                            width: 30,
-                          ),
-                          trl: widget.currentCity,
-                          colr: Colors.grey.shade600),
-                      cityDetail(
-                          text: 'Markets',
-                          icon: KoukiconsManager(
-                            height: 30,
-                            width: 30,
-                          ),
-                          trl: ld[widget.index].markets,
-                          colr: Colors.grey.shade600),
-                      cityDetail(
-                          text: 'Rainfall',
-                          icon: KoukiconsCloudWarning(
-                            height: 30,
-                            width: 30,
-                          ),
-                          trl: widget.currentCity,
-                          colr: Colors.grey.shade600),
-                      cityDetail(
-                          text: 'Current Temperature',
-                          icon: KoukiconsScatterPlot(
+          Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    cityDetail(
+                        text: 'Current city',
+                        icon: KoukiconsLocation(
+                          height: 30,
+                          width: 30,
+                        ),
+                        trl: widget.currentCity,
+                        colr: Colors.grey.shade600),
+                    cityDetail(
+                        text: 'Markets',
+                        icon: KoukiconsManager(
+                          height: 30,
+                          width: 30,
+                        ),
+                        trl: ld[index].markets,
+                        colr: Colors.green),
+                    cityDetail(
+                        text: 'Rainfall',
+                        icon: KoukiconsCloudWarning(
+                          height: 30,
+                          width: 30,
+                        ),
+                        trl: '$condition',
+                        colr: Colors.red),
+                    cityDetail(
+                        text: 'Current Temperature',
+                        icon: KoukiconsScatterPlot(
+                          height: 40,
+                          width: 40,
+                        ),
+                        trl: "$temperature\u00B0C",
+                        colr: Colors.blue),
+                    cityDetail(
+                        text: 'Soil Type Temperature',
+                        icon: KoukiconsSpeed(
+                          height: 30,
+                          width: 30,
+                        ),
+                        trl: ld[index].soilType,
+                        colr: Colors.brown),
+                    cityDetail(
+                        text: 'Soil pH range',
+                        icon: KoukiconsWorkflow(
+                          height: 30,
+                          width: 30,
+                        ),
+                        trl: ld[index].soilPh,
+                        colr: Colors.brown),
+                    cityDetail(
+                        text: 'Available Water Bodies',
+                        icon: KoukiconsCloudWarning(
+                          height: 30,
+                          width: 30,
+                        ),
+                        trl: ld[index].availableWaterBodies,
+                        colr: Colors.lightBlueAccent),
+                    cityDetail(
+                        text: 'Tractability',
+                        icon: KoukiconsWorkflow(
+                          height: 30,
+                          width: 30,
+                        ),
+                        trl: tractability,
+                        colr: Colors.blue),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        getPosition();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const LocationDetails();
+                        }));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0, top: 13),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
                             height: 40,
-                            width: 40,
-                          ),
-                          trl: ld[widget.index].currentTemperature,
-                          colr: Colors.grey.shade600),
-                      cityDetail(
-                          text: 'Soil Type Temperature',
-                          icon: KoukiconsSpeed(
-                            height: 30,
-                            width: 30,
-                          ),
-                          trl: ld[widget.index].soilType,
-                          colr: Colors.grey.shade600),
-                      cityDetail(
-                          text: 'Soil pH range',
-                          icon: KoukiconsWorkflow(
-                            height: 30,
-                            width: 30,
-                          ),
-                          trl: ld[widget.index].soilPh,
-                          colr: Colors.grey.shade600),
-                      cityDetail(
-                          text: 'Available Water Bodies',
-                          icon: KoukiconsCloudWarning(
-                            height: 30,
-                            width: 30,
-                          ),
-                          trl: ld[widget.index].availableWaterBodies,
-                          colr: Colors.red),
-                      cityDetail(
-                          text: 'Tractability',
-                          icon: KoukiconsWorkflow(
-                            height: 30,
-                            width: 30,
-                          ),
-                          trl: ld[widget.index].tractability,
-                          colr: Colors.red),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const LocationDetails();
-                          }));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0, top: 13),
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              height: 40,
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40),
-                                  color: Colors.green),
-                              child: const Center(
-                                child: Text(
-                                  'Check for more details here...',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                color: Colors.green),
+                            child: const Center(
+                              child: Text(
+                                'Check for more details here...',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  )),
-            ),
-          ),
+                    ),
+                  ])),
         ],
       ),
     );
   }
 
   Widget cityDetail({required String text, required Widget icon, trl, colr}) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(
-            right: 10.0, left: 8.0, bottom: 1.0, top: 5.0),
-        child: ListTile(
-          leading: icon,
-          title: Text(
-            text,
-            style: kSoilStyle,
-          ),
-          trailing: Text(
-            trl,
-            style: kSoilStyle.copyWith(
-              fontWeight: FontWeight.w400,
-              color: colr,
-            ),
+    return Padding(
+      padding: const EdgeInsets.only(
+        right: 10.0,
+        left: 3.0,
+      ),
+      child: ListTile(
+        leading: icon,
+        title: Text(
+          text,
+          style: kSoilStyle,
+        ),
+        trailing: Text(
+          trl,
+          style: kSoilStyle.copyWith(
+            fontWeight: FontWeight.w400,
+            color: colr,
           ),
         ),
       ),

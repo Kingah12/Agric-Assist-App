@@ -7,14 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:awesome_dropdown/awesome_dropdown.dart';
 import 'package:flutter/widgets.dart';
 
-var ld = LocationCityDetails.locationDetailsItems;
+// int index = 0;
 
-extension IndexInterable<E> on Iterable<E> {
-  Iterable<T> indexedMap<T>(T Function(E element, int index) f) {
-    var index = 0;
-    return map((e) => f(e, index++));
-  }
-}
+var ld = locationDetailsItems;
+
+// extension IndexInterable<E> on Iterable<E> {
+//   Iterable<T> indexedMap<T>(T Function(E element, int index) f) {
+//     return map((e) => f(e, index++));
+//   }
+// }
 
 class SelectLocationPage extends StatefulWidget {
   const SelectLocationPage({Key? key}) : super(key: key);
@@ -25,20 +26,9 @@ class SelectLocationPage extends StatefulWidget {
 
 class _SelectLocationPageState extends State<SelectLocationPage> {
   String sItem = 'select location';
-  List<String> newLocationDetails = <String>[];
-  int index = 0;
-  List<LocationCityDetails> lds = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    LocationCityDetails.locationDetailsItems = lds;
-  }
 
   @override
   Widget build(BuildContext context) {
-    print(ld.map((element) => element.id).toString());
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -87,13 +77,14 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                         fontWeight: FontWeight.bold,
                         fontSize: 17),
                     isPanDown: true,
-                    dropDownList: ld
-                        .indexedMap((element, index) => element.currentcity)
-                        .toList(),
+                    dropDownList:
+                        locationDetailsItems.map((e) => e.currentcity).toList(),
                     elevation: 20,
                     onDropDownItemClick: (value) {
+                      var ld = locationDetailsItems;
                       setState(() {
                         sItem = value;
+                        // print(ld);
                       });
                     },
                     dropDownTopBorderRadius: 40,
@@ -109,7 +100,15 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                             MaterialPageRoute(builder: (context) {
                           return HomePage(
                             currentCity: sItem,
-                            index: index,
+                            // markets: ld.length,
+                            // currentTemperature: ,
+                            // tractability: ,
+                            // soilPh: ,
+                            // soilType: ,
+                            // availableWaterBodies: ,
+                            // markets: ,
+                            // index: index,
+                            // rainfall: ,
                           );
                         }));
                       }
