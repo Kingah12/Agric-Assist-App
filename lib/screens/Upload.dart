@@ -1,15 +1,13 @@
-import 'package:agro_assist/screens/home_page.dart';
-import 'package:agro_assist/screens/sign_up.dart';
+import 'dart:io';
+
 import 'package:agro_assist/screens/timeline_screen.dart';
-import 'package:agro_assist/screens/welcome_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+
 import '../select_location_page.dart';
 import 'log_in.dart';
 import 'progress_dialog.dart';
@@ -147,9 +145,9 @@ class _UploadTimeLineState extends State<UploadTimeLine> {
           ),
         ),
         const SizedBox(height: 60),
-        RaisedButton(
-          elevation: 15,
-          color: Colors.green,
+        OutlinedButton(
+          // elevation: 15,
+          // color: Colors.green,
           onPressed: uploadPost,
           child: const Text(
             'Add a post',

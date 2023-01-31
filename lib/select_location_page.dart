@@ -1,10 +1,10 @@
-import 'dart:ffi';
 import 'package:agro_assist/model/location_details.dart';
 import 'package:agro_assist/screens/home_page.dart';
 import 'package:agro_assist/screens/log_in.dart';
+import 'package:awesome_dropdown/awesome_dropdown.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:awesome_dropdown/awesome_dropdown.dart';
 import 'package:flutter/widgets.dart';
 
 // int index = 0;
@@ -25,40 +25,40 @@ class SelectLocationPage extends StatefulWidget {
 }
 
 class _SelectLocationPageState extends State<SelectLocationPage> {
-  String sItem = 'select location';
+  String sItem = 'select location'.tr();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const Icon(
-              Icons.arrow_back_ios_outlined,
-              color: Colors.black,
-              size: 25,
-            ),
-          ),
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.white,
+        //   elevation: 0,
+        //   leading: GestureDetector(
+        //     onTap: () {
+        //       Navigator.pop(context);
+        //     },
+        //     child: const Icon(
+        //       Icons.arrow_back_ios_outlined,
+        //       color: Colors.black,
+        //       size: 25,
+        //     ),
+        //   ),
+        // ),
         body: Container(
             color: Colors.white,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
+                  const SizedBox(
                       width: 200,
-                      child: const Image(image: AssetImage('assets/logo.png'))),
+                      child: Image(image: AssetImage('assets/logo.png'))),
                   const SizedBox(
                     height: 30,
                   ),
-                  const Text(
-                    'Please select your Location',
-                    style: TextStyle(
+                  Text(
+                    'Please select your Location'.tr(),
+                    style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
@@ -92,23 +92,14 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (sItem.contains('select location')) {
-                        displayToast(context, 'please select a location',
+                      if (sItem.contains('select location'.tr())) {
+                        displayToast(context, 'please select a location'.tr(),
                             Colors.black54, Colors.white);
                       } else {
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
                           return HomePage(
                             currentCity: sItem,
-                            // markets: ld.length,
-                            // currentTemperature: ,
-                            // tractability: ,
-                            // soilPh: ,
-                            // soilType: ,
-                            // availableWaterBodies: ,
-                            // markets: ,
-                            // index: index,
-                            // rainfall: ,
                           );
                         }));
                       }
@@ -129,17 +120,17 @@ class _SelectLocationPageState extends State<SelectLocationPage> {
                                     Radius.circular(40))),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(
+                              children: [
+                                const Icon(
                                   Icons.arrow_forward_outlined,
                                   color: Colors.white,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 6,
                                 ),
                                 Text(
-                                  'Next',
-                                  style: TextStyle(
+                                  'Next'.tr(),
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       letterSpacing: 1.2,
                                       fontSize: 18,

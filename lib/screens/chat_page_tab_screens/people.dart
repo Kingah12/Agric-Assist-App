@@ -1,8 +1,11 @@
-import 'package:agro_assist/screens/chat_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../models_auths/models.dart';
 import '../../splash_screen.dart';
+import '../chat_details.dart';
 import '../log_in.dart';
 
 class People extends StatefulWidget {
@@ -13,7 +16,7 @@ class People extends StatefulWidget {
 }
 
 class _PeopleState extends State<People> with WidgetsBindingObserver {
-  var currentUser = FirebaseAuth.instance.currentUser!.uid;
+  var currentUserUid = FirebaseAuth.instance.currentUser!.uid;
 
   ChatScreen(String nickname, String uid, BuildContext context, friendStatus,
       friendImage) {
@@ -59,57 +62,89 @@ class _PeopleState extends State<People> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection("users")
-          .where('uid', isNotEqualTo: currentUser)
-          .snapshots(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) {
-          displayToast(context, 'please check your network connection',
-              Colors.black26, Colors.white);
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasData) {
-          return CustomScrollView(slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              expandedHeight: 150,
-              elevation: 30,
-              floating: true,
-              backgroundColor: Colors.white,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  color: Colors.green[200],
-                ),
-                centerTitle: false,
-                title: const Text(
-                  'People',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 30),
-                ),
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) => [
+        SliverAppBar(
+          backgroundColor: Colors.grey[200],
+          automaticallyImplyLeading: false,
+          expandedHeight: 100,
+          flexibleSpace: const FlexibleSpaceBar(
+            collapseMode: CollapseMode.parallax,
+            title: Text(
+              'People',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
-            SliverList(
-                delegate: SliverChildListDelegate(
-                    snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
-              Map<String, dynamic> data =
-                  document.data()! as Map<String, dynamic>;
-              return ListTile(
-                onTap: () => ChatScreen(data['nickname'], data['uid'], context,
-                    data['status'], data['photoUrl']),
-                title: Text(data['nickname'].toString()),
-                subtitle: Text(data['status'].toString()),
-              );
-            }).toList())),
-          ]);
-        }
-        return Container();
-      },
+            // background: Colors.red,
+          ),
+          floating: true,
+          snap: true,
+        ),
+      ],
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("users")
+            .where('uid', isNotEqualTo: currentUserUid)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            displayToast(context, 'please check your network connection',
+                Colors.black26, Colors.white);
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasData) {
+            var data = snapshot.data!.docs;
+            return ListView.builder(
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          Models().callChatScreen_Page(
+                              context,
+                              data[index]["uid"].toString(),
+                              data[index]["nickname"].toString());
+                        },
+                        leading: const CircleAvatar(
+                          child: Icon(Icons.person),
+                        ),
+                        subtitle: Text(data[index]['status']),
+                        title: Text(data[index]['nickname']),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                            ),
+                            Text(
+                              DateFormat('hh:mm a')
+                                  .format(data[index]["createdAt"].toDate()),
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 350,
+                        child: Divider(
+                          color: Colors.grey[300],
+                        ),
+                      )
+                    ],
+                  );
+                });
+          }
+          return Container();
+        },
+      ),
     );
   }
 }

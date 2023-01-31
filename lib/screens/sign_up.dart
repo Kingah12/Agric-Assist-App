@@ -1,23 +1,21 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:agro_assist/model/firestore_constants.dart';
 import 'package:agro_assist/screens/log_in.dart';
 import 'package:agro_assist/screens/progress_dialog.dart';
 import 'package:agro_assist/screens/welcome_page.dart';
-import 'package:agro_assist/splash_screen.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../model/user_chat.dart';
-import '../select_location_page.dart';
+
 import '../main.dart';
+import '../select_location_page.dart';
 
 GoogleSignInAccount? _userObj;
 
@@ -105,10 +103,10 @@ class _SignUpState extends State<SignUp> {
                               color: Colors.green.shade600,
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(40))),
-                          child: const Center(
+                          child: Center(
                               child: Text(
-                            'Proceed',
-                            style: TextStyle(
+                            'Proceed'.tr(),
+                            style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 1.2,
                                 fontSize: 18,
@@ -147,7 +145,7 @@ class _SignUpState extends State<SignUp> {
           AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
-                'Create\nAccount',
+                'Create Account'.tr(),
                 textStyle:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
               ),
@@ -251,9 +249,9 @@ class _SignUpState extends State<SignUp> {
         children: [
           Row(
             children: [
-              const Text(
-                'Sign Up',
-                style: TextStyle(
+              Text(
+                'Sign Up'.tr(),
+                style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
@@ -302,9 +300,9 @@ class _SignUpState extends State<SignUp> {
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            'or',
-            style: TextStyle(
+          Text(
+            'or'.tr(),
+            style: const TextStyle(
               fontSize: 16,
               color: Colors.grey,
               fontWeight: FontWeight.bold,
@@ -350,8 +348,8 @@ class _SignUpState extends State<SignUp> {
               const SizedBox(
                 width: 10,
               ),
-              const Text(
-                'Sign In',
+              Text(
+                'Sign In'.tr(),
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
@@ -377,16 +375,16 @@ class _SignUpState extends State<SignUp> {
         child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Text(
-                "Have an account?",
+                "Have an account?".tr(),
                 style: kstyle,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 7,
               ),
               Text(
-                "Sign In!",
+                "Sign In".tr(),
                 style: kstyle,
               ),
             ],
@@ -397,12 +395,12 @@ class _SignUpState extends State<SignUp> {
   }
 
   Padding emmanuelMuyiwa() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.only(top: 100.0, bottom: 10),
       child: Center(
           child: Text(
-        'powered by emmanuelmuyiwa19@gmail.com\n09022925316',
-        style: TextStyle(color: Colors.black12),
+        'powered by emmanuelmuyiwa19@gmail.com\n09022925316'.tr(),
+        style: const TextStyle(color: Colors.black12),
       )),
     );
   }
@@ -434,10 +432,10 @@ class _SignUpState extends State<SignUp> {
           .get()
           .then((QuerySnapshot snapShot) {
         if (snapShot.docs.isEmpty) {
-          users.add({
+          users.doc(FirebaseAuth.instance.currentUser!.uid).set({
             "email": _email.text.trim(),
             "password": _password.text.trim(),
-            "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
+            "createdAt": DateTime.now(),
             "nickname": _nickName.text.trim(),
             "status": 'online',
             FirestoreConstants.photoUrl: timeLineImage!.toString(),

@@ -1,18 +1,19 @@
-import 'package:agro_assist/select_location_page.dart';
 import 'package:agro_assist/screens/sign_up.dart';
 import 'package:agro_assist/screens/welcome_page.dart';
+import 'package:agro_assist/select_location_page.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import '../main.dart';
 import '../model/firestore_constants.dart';
 import '../splash_screen.dart';
 import 'progress_dialog.dart';
-import 'sign_up.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 final GoogleSignIn gSignIn = GoogleSignIn();
 final GoogleSignInAccount? gUser = gSignIn.currentUser;
@@ -104,6 +105,26 @@ class _Log_InState extends State<Log_In> {
           : ListView(
               scrollDirection: Axis.vertical,
               children: [
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        context.setLocale(const Locale("en"));
+                      });
+                    },
+                    child: const Text(
+                      'English',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        context.setLocale(const Locale("ig"));
+                      });
+                    },
+                    child: const Text(
+                      'Igbo',
+                      style: TextStyle(color: Colors.white),
+                    )),
                 welcomeBack(),
                 const SizedBox(height: 10),
                 textFields(),
@@ -125,7 +146,7 @@ class _Log_InState extends State<Log_In> {
           AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
-                'Welcome\nBack',
+                'Welcome_Back'.tr(),
                 textStyle:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
               ),
@@ -147,14 +168,14 @@ class _Log_InState extends State<Log_In> {
       child: Column(
         children: [
           textField(
-              "Enter email",
+              "Enter email".tr(),
               _email,
               const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
               null,
               false),
           const SizedBox(height: 20),
           textField(
-              "Enter password",
+              "Enter password".tr(),
               _password,
               const TextStyle(
                 fontWeight: FontWeight.w700,
@@ -222,9 +243,9 @@ class _Log_InState extends State<Log_In> {
         children: [
           Row(
             children: [
-              const Text(
-                'Sign In',
-                style: TextStyle(
+              Text(
+                'Sign In'.tr(),
+                style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
@@ -236,16 +257,16 @@ class _Log_InState extends State<Log_In> {
                   if (_email.text.isEmpty) {
                     displayToast(
                         context,
-                        'you need an email address to continue',
+                        'you need an email address to continue'.tr(),
                         Colors.red,
                         Colors.white);
                   } else if (!_email.text.contains("@")) {
-                    displayToast(context, 'email is badly formatted',
+                    displayToast(context, 'email is badly formatted'.tr(),
                         Colors.red, Colors.white);
                   } else if (_password.text.length < 6) {
                     displayToast(
                         context,
-                        'password must be more than 6 characters ',
+                        'password must be more than 6 characters '.tr(),
                         Colors.red,
                         Colors.white);
                   } else {
@@ -285,7 +306,7 @@ class _Log_InState extends State<Log_In> {
       onTap: () {
         final gSignedIn = gSignIn.signIn().then((userData) {
           setState(() {
-            displayToast(context, "you have logged in successfully",
+            displayToast(context, "you have logged in successfully".tr(),
                 Colors.green, Colors.white);
             _isLoggedIn = true;
             _userObj = userData;
@@ -335,8 +356,8 @@ class _Log_InState extends State<Log_In> {
               const SizedBox(
                 width: 10,
               ),
-              const Text(
-                'Sign In',
+              Text(
+                'Sign In'.tr(),
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
@@ -361,16 +382,16 @@ class _Log_InState extends State<Log_In> {
         padding: const EdgeInsets.all(22.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text(
-              "Dont' have an account?",
+              "Dont' have an account?".tr(),
               style: kstyle,
             ),
-            SizedBox(
+            const SizedBox(
               width: 7,
             ),
             Text(
-              "Create one!",
+              "Create one!".tr(),
               style: kstyle,
             ),
           ],
@@ -380,12 +401,12 @@ class _Log_InState extends State<Log_In> {
   }
 
   Padding emmanuelMuyiwa() {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.only(top: 100.0, bottom: 10),
       child: Center(
           child: Text(
-        'powered by emmanuelmuyiwa19@gmail.com\n09022925316',
-        style: TextStyle(color: Colors.black12),
+        'powered by emmanuelmuyiwa19@gmail.com\n09022925316'.tr(),
+        style: const TextStyle(color: Colors.black12),
       )),
     );
   }
@@ -408,15 +429,18 @@ class _Log_InState extends State<Log_In> {
         .user;
 
     if (_userDetails != null) {
-      displayToast(context, 'you have logged in successfully', Colors.green,
-          Colors.white);
+      displayToast(context, 'you have logged in successfully'.tr(),
+          Colors.green, Colors.white);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return const WelcomePage();
       }));
     } else {
       Navigator.pop(context);
-      auth.signOut().then((value) => displayToast(context,
-          'Please check your internet connectivity', Colors.red, Colors.white));
+      auth.signOut().then((value) => displayToast(
+          context,
+          'Please check your internet connectivity'.tr(),
+          Colors.red,
+          Colors.white));
     }
   }
 }
@@ -440,7 +464,7 @@ const kAnimStyle = TextStyle(color: Colors.white, fontSize: 30);
 void signOut(context) async {
   await auth.signOut();
   final gSignOut = await gSignIn.signOut().then((value) {
-    displayToast(context, 'signed Out', Colors.black54, Colors.white);
+    displayToast(context, 'signed Out'.tr(), Colors.black54, Colors.white);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return const Log_In();
     }));
@@ -448,6 +472,6 @@ void signOut(context) async {
   await gSignIn.disconnect();
   if (gSignOut != null) {
     displayToast(
-        context, 'Signed Out Successfully', Colors.black54, Colors.white);
+        context, 'Signed Out Successfully'.tr(), Colors.black54, Colors.white);
   }
 }
