@@ -14,11 +14,24 @@ class _MyRichAppState extends State<MyRichApp> {
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.white,
-          title: Text('My Rich App', style: TextStyle(color: Colors.black)),
+          title: const Text(
+            'My Rich App',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+              decoration: TextDecoration.underline,
+            ),
+          ),
         ),
         backgroundColor: Colors.white,
-        body: Center(
-          child: Image.asset('assets/icon.png'),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CircleAvatar(
+              foregroundColor: Colors.brown,
+            )
+          ],
         ));
   }
 }

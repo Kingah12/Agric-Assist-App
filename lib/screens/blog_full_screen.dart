@@ -40,23 +40,10 @@ class _BlogPostState extends State<BlogPost> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5.0, left: 8, right: 8),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
-                width: MediaQuery.of(context).size.width * 1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.grey.shade200,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Image.network(
-                    widget.image,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
+            Image.network(
+              widget.image,
+              filterQuality: FilterQuality.high,
+              fit: BoxFit.contain,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),

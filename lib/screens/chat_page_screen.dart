@@ -189,14 +189,12 @@
 //   }
 // }
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../splash_screen.dart';
-import 'chat_page_tab_screens/chats.dart';
+
 import 'chat_page_tab_screens/calls.dart';
+import 'chat_page_tab_screens/chats.dart';
 import 'chat_page_tab_screens/people.dart';
-import 'chat_page_tab_screens/settings.dart';
 
 class ChatPageScreen extends StatefulWidget {
   const ChatPageScreen({Key? key}) : super(key: key);
@@ -211,7 +209,8 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
     const Chats(),
     Calls(),
     People(),
-    const ChatSettings(),
+
+    // const ChatSettings(),
   ];
 
   @override
@@ -243,8 +242,8 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
             BottomNavigationBarItem(
                 icon: Icon(CupertinoIcons.person_alt_circle_fill),
                 label: ' Person'),
-            BottomNavigationBarItem(
-                icon: Icon(CupertinoIcons.settings_solid), label: 'Settings'),
+            // BottomNavigationBarItem(
+            //     icon: Icon(CupertinoIcons.settings_solid), label: 'Settings'),
           ]),
     );
   }

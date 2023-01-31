@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:agro_assist/splash_screen.dart';
+
 import 'package:agro_assist/screens/log_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -126,8 +126,8 @@ class _ChatsDetailsState extends State<ChatsDetails> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           double width = 150;
           double height = 50;
-          var radius2 = const Radius.circular(60);
           Color? conColour = Colors.grey[350];
+          var radius2 = const Radius.circular(60);
           return shimmerEffect(
               height: height,
               width: width,

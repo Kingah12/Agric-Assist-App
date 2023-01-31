@@ -2,6 +2,7 @@ import 'package:agro_assist/model/posts.dart';
 import 'package:agro_assist/screens/Upload.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
 import 'blog_full_screen.dart';
 
 class TimeLineSection extends StatefulWidget {
@@ -88,32 +89,47 @@ class _TimeLineSectionState extends State<TimeLineSection> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(
+        elevation: 0,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: const Icon(
             Icons.arrow_back,
-            color: Colors.green,
+            color: Colors.black,
           ),
         ),
         backgroundColor: Colors.white,
         title: const Text(
-          'Agro Timeline',
+          'Agro Post',
           style: TextStyle(
             letterSpacing: 2,
             fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
           ),
         ),
       ),
-      body: Container(
+      body: SizedBox(
         child: postLists.isEmpty
-            ? const Center(
-                child: CircularProgressIndicator(
-                color: Colors.green,
-              ))
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Center(
+                    child: Icon(Icons.broken_image_outlined,
+                        color: Colors.grey, size: 40),
+                  ),
+                  SizedBox(height: 25),
+                  Center(
+                    child: Text(
+                      'There are no post available\nplease make some!',
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                    ),
+                  ),
+                ],
+              )
             : ListView.builder(
                 reverse: false,
                 itemCount: postLists.length,
@@ -146,37 +162,43 @@ class _TimeLineSectionState extends State<TimeLineSection> {
       },
       child: Card(
         elevation: 10,
-        margin: const EdgeInsets.all(15.0),
+        margin: const EdgeInsets.all(0.0),
         child: Container(
-          padding: EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    date,
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      date,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  Text(
-                    time,
-                    style: Theme.of(context).textTheme.subtitle1,
-                    textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      time,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              Container(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
-                  child: Image.network(image, fit: BoxFit.cover)),
+              Image.network(image, fit: BoxFit.fill),
               const SizedBox(height: 10),
-              Text(
-                description,
-                style: const TextStyle(color: Colors.black, fontSize: 16),
-                textAlign: TextAlign.center,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  description,
+                  style: const TextStyle(color: Colors.black, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),

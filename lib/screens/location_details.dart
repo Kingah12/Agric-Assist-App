@@ -8,7 +8,8 @@ var agronomics = agroPractices;
 int _index = 1;
 
 class LocationDetails extends StatefulWidget {
-  const LocationDetails({Key? key}) : super(key: key);
+  final int rainfall;
+  const LocationDetails({Key? key, required this.rainfall}) : super(key: key);
 
   @override
   _LocationDetailsState createState() => _LocationDetailsState();
@@ -84,36 +85,44 @@ class _LocationDetailsState extends State<LocationDetails> {
                         return Padding(
                           padding: const EdgeInsets.only(top: 20.0),
                           child: cropItem(
-                            agronomics[index].cropImage,
-                            agronomics[index].cropName,
-                            agronomics[index].cropFamily,
-                            agronomics[index].botanicalName,
-                            agronomics[index].requiredRainfall,
-                            agronomics[index].requiredTemperature,
-                            agronomics[index].soilRequirement,
-                            agronomics[index].requiredSoilPH,
-                            agronomics[index].shadeTolerance,
-                            agronomics[index].waterLoggedTolerance,
-                            agronomics[index].droughtResistance,
-                            agronomics[index].irrigation,
-                            agronomics[index].maturityPeriod,
-                            agronomics[index].landPreparation,
-                            agronomics[index].tillageOperation,
-                            agronomics[index].plantingMaterials,
-                            agronomics[index].plantingMethods,
-                            agronomics[index].plantingDate,
-                            agronomics[index].seedRateYield,
-                            agronomics[index].weedControl,
-                            agronomics[index].fertilizerApplication,
-                            agronomics[index].diseaseAndSymptoms,
-                            agronomics[index].pestInclude,
-                            agronomics[index].disease,
-                            agronomics[index].harvest,
-                            agronomics[index].processing,
-                            agronomics[index].storage,
-                            agronomics[index].products,
-                            agronomics[index].processingMachines,
-                            agronomics[index].packaging,
+                            cropImage: agronomics[index].cropImage,
+                            cropName: agronomics[index].cropName,
+                            cropFamily: agronomics[index].cropFamily,
+                            botanicalName: agronomics[index].botanicalName,
+                            requiredRainfall:
+                                agronomics[index].requiredRainfall,
+                            requiredTemp: agronomics[index].requiredTemperature,
+                            soilRequirement: agronomics[index].soilRequirement,
+                            soilPh: agronomics[index].requiredSoilPH,
+                            shadeTol: agronomics[index].shadeTolerance,
+                            waterLogTol: agronomics[index].waterLoggedTolerance,
+                            droughtRes: agronomics[index].droughtResistance,
+                            irrigation: agronomics[index].irrigation,
+                            maturityPeriod: agronomics[index].maturityPeriod,
+                            landPreparation: agronomics[index].landPreparation,
+                            tillageOperation:
+                                agronomics[index].tillageOperation,
+                            plantingMaterials:
+                                agronomics[index].plantingMaterials,
+                            plantingMethods: agronomics[index].plantingMethods,
+                            plantingDate: agronomics[index].plantingDate,
+                            seedRateY: agronomics[index].seedRateYield,
+                            weedControl: agronomics[index].weedControl,
+                            fertilizerApplication:
+                                agronomics[index].fertilizerApplication,
+                            pest: agronomics[index].pest,
+                            harvest: agronomics[index].harvest,
+                            processing: agronomics[index].processing,
+                            storage: agronomics[index].storage,
+                            products: agronomics[index].products,
+                            processingMachine:
+                                agronomics[index].processingMachines,
+                            packaging: agronomics[index].packaging,
+                            symptoms: agronomics[index].symptoms,
+                            pestControl: agronomics[index].pestControl,
+                            diseaseControl: agronomics[index].diseaseControl,
+                            disease: agronomics[index].disease,
+                            rainfall: widget.rainfall,
                           ),
                         );
                       })
@@ -126,42 +135,46 @@ class _LocationDetailsState extends State<LocationDetails> {
     );
   }
 
-  Widget cropItem(
-    String cropImage,
-    String cropName,
-    String cropFamily,
-    String botanicalName,
-    String requiredRainfall,
-    String requiredTemp,
-    String soilRequirement,
-    String soilPh,
-    String shadeTol,
-    String waterLogTol,
-    String droughtRes,
-    String irrigation,
-    String maturityPeriod,
-    String landPreparation,
-    String tillageOperation,
-    String plantingMaterials,
-    String plantingMethods,
-    String plantingDate,
-    String seedRateY,
-    String weedControl,
-    String fertilizerApplication,
-    String diseaseSymptoms,
-    String pest,
-    String pestControl,
-    String harvest,
-    String processing,
-    String storage,
-    String products,
-    String processingMachine,
-    String packaging,
-  ) {
+  Widget cropItem({
+    required String cropImage,
+    required String cropName,
+    required String cropFamily,
+    required String botanicalName,
+    required String requiredRainfall,
+    required String requiredTemp,
+    required String soilRequirement,
+    required String soilPh,
+    required String shadeTol,
+    required String waterLogTol,
+    required String droughtRes,
+    required String irrigation,
+    required String maturityPeriod,
+    required String landPreparation,
+    required String tillageOperation,
+    required String plantingMaterials,
+    required String plantingMethods,
+    required String plantingDate,
+    required String seedRateY,
+    required String weedControl,
+    required String fertilizerApplication,
+    required String pest,
+    required String pestControl,
+    required String harvest,
+    required String processing,
+    required String storage,
+    required String products,
+    required String processingMachine,
+    required String packaging,
+    required String symptoms,
+    required String diseaseControl,
+    required String disease,
+    required int rainfall,
+  }) {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return AgronomicsPage(
+            rainfall: rainfall,
             image: cropImage,
             cropName: cropName,
             cropFamily: cropFamily,
@@ -183,7 +196,6 @@ class _LocationDetailsState extends State<LocationDetails> {
             seedRateY: seedRateY,
             weedControl: weedControl,
             fertilizerApplication: fertilizerApplication,
-            diseaseSymptoms: diseaseSymptoms,
             pest: pest,
             pestControl: pestControl,
             harvest: harvest,
@@ -192,6 +204,9 @@ class _LocationDetailsState extends State<LocationDetails> {
             products: products,
             processingMachine: processingMachine,
             packaging: packaging,
+            symptoms: symptoms,
+            diseaseControl: diseaseControl,
+            disease: disease,
           );
         }));
       },

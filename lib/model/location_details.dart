@@ -107,7 +107,7 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     temperature: 'loading...',
     soilType: "Shallow lithosol soil",
     soilPh: "4.1 - 5.9",
-    availableWaterBodies: "Mmamu River, Omoh Mmaku",
+    availableWaterBodies: "Mmamu River,Mmaku",
     tractability: "loading...",
   ),
   LocationCityDetails(

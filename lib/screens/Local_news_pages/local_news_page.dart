@@ -28,6 +28,14 @@ class _LocalNewsPageState extends State<LocalNewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.lightGreen,
+        child: const Icon(
+          Icons.mail_outline_outlined,
+          color: Colors.white,
+        ),
+        onPressed: () {},
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
