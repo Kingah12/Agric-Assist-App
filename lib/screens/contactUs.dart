@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../splash_screen.dart';
-
 class ContactUsPage extends StatefulWidget {
   const ContactUsPage({Key? key}) : super(key: key);
 
@@ -39,7 +37,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
               ),
             ),
             const Text(
-              'Agro Assist',
+              'AgricassistApp',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
             ),
             const SizedBox(height: 50),
@@ -50,22 +48,24 @@ class _ContactUsPageState extends State<ContactUsPage> {
               height: 100,
               decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(40)),
+                  borderRadius: BorderRadius.circular(20)),
               child: Center(
                 child: RichText(
-                    text: TextSpan(children: [
-                  const TextSpan(
-                    text: 'Note: Thanks for choosing Agroassist',
+                    text: const TextSpan(children: [
+                  TextSpan(
+                    text: 'Thanks for choosing AgricassistApp, ',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.black),
                   ),
+
+                  ///current users email
+                  // TextSpan(
+                  //   text: ' ${auth.currentUser!.email ?? "user"}  ',
+                  //   style: const TextStyle(color: Colors.red),
+                  // ),
                   TextSpan(
-                    text: ' ${auth.currentUser!.email ?? "user"}  ',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  const TextSpan(
                     text:
-                        'Hope we were able to provide you with the informations you need to mechanize your farm. For further enquiry kindly call Or Email us on:',
+                        'Hope we were able to provide you with the information you need to mechanize your farm. For further enquiry kindly call Or Email us on:',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.black),
                   ),
@@ -76,7 +76,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
               child: Container(
                 decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(30)),
+                    borderRadius: BorderRadius.circular(20)),
                 width: 300,
                 height: 60,
                 child: Row(
@@ -96,7 +96,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(30)),
+                    borderRadius: BorderRadius.circular(20)),
                 width: 300,
                 height: 60,
                 child: Row(

@@ -1,11 +1,62 @@
+// import 'package:agora_uikit/agora_uikit.dart';
+// import 'package:flutter/material.dart';
+//
+// class VideoCallsPage extends StatefulWidget {
+//   const VideoCallsPage({Key? key}) : super(key: key);
+//
+//   @override
+//   State<VideoCallsPage> createState() => _VideoCallsPageState();
+// }
+//
+// class _VideoCallsPageState extends State<VideoCallsPage> {
+//   final AgoraClient _agoraClient = AgoraClient(
+//       agoraConnectionData: AgoraConnectionData(
+//     appId: '0989889db7914c0ab81ecc412755d85e',
+//     channelName: 'test_agAssist',
+//     tempToken:
+//         '007eJxTYJj0lPfhJK9QDuat4jklexbX/rkQf6L5/9zozDU5rQv/CNsqMBhYWlhaWFimJJlbGpokGyQmWRimJiebGBqZm5qmWJimWgeLpDQEMjLcncnOwsgAgSA+L0NJanFJfGK6Y3FxZnEJAwMAlZMi2g==',
+//   ));
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     _initAgora();
+//   }
+//
+//   _initAgora() async {
+//     await _agoraClient.initialize();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return WillPopScope(
+//       onWillPop: () async => false,
+//       child: Scaffold(
+//         appBar: AppBar(
+//           title: const Text('Video Call'),
+//         ),
+//         body: SafeArea(
+//           child: Stack(
+//             children: [
+//               AgoraVideoViewer(client: _agoraClient),
+//               AgoraVideoButtons(client: _agoraClient)
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
-class VideoCallsPage extends StatefulWidget {
+class videoCallPage extends StatefulWidget {
   final String callID;
   final String userId;
   final String userName;
-  const VideoCallsPage(
+  const videoCallPage(
       {Key? key,
       required this.callID,
       required this.userName,
@@ -13,10 +64,10 @@ class VideoCallsPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<VideoCallsPage> createState() => _VideoCallsPageState();
+  State<videoCallPage> createState() => _videoCallPageState();
 }
 
-class _VideoCallsPageState extends State<VideoCallsPage> {
+class _videoCallPageState extends State<videoCallPage> {
   int appId = 1502292490;
   String appSignIn =
       '815e51fd40a8a3390b7e78b7d312239a010c61b9d09d77ae0f0e6212d6dbc14d';

@@ -7,6 +7,7 @@ class LocationCityDetails {
   String soilPh;
   String availableWaterBodies;
   String tractability;
+  String soilNutrients;
   int id;
   LocationCityDetails({
     required this.currentcity,
@@ -17,6 +18,7 @@ class LocationCityDetails {
     required this.soilPh,
     required this.availableWaterBodies,
     required this.tractability,
+    required this.soilNutrients,
     required this.id,
   });
 }
@@ -29,8 +31,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Deep clay loam soil",
-    soilPh: "3.9 - 4.6",
+    soilPh: "5.5 - 6.5",
     availableWaterBodies: "Nvula Agbogugu",
+    soilNutrients: '5:6:15',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -40,8 +43,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Deep clay loam soil",
-    soilPh: "4.9 - 5.9",
+    soilPh: "5.0 - 6.5",
     availableWaterBodies: "Anizi River",
+    soilNutrients: '8:5:15',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -51,8 +55,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Alluvial Soil",
-    soilPh: "3.6 - 5.2",
+    soilPh: "5.5 - 6.5",
     availableWaterBodies: "Null",
+    soilNutrients: '57:100:192',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -62,8 +67,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Deep clay loam soil",
-    soilPh: "3.9 - 5.6",
+    soilPh: "5.0 - 6.5",
     availableWaterBodies: "Iyioma",
+    soilNutrients: '7:12:22',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -73,8 +79,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Sandy loam soil",
-    soilPh: "4.7 - 6.1",
+    soilPh: "5.0 - 6.0",
     availableWaterBodies: "  4 catchments",
+    soilNutrients: '7:17:27',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -84,8 +91,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Sandy loam soil",
-    soilPh: "4.2 - 5.4",
+    soilPh: "5.0 - 6.0",
     availableWaterBodies: " null",
+    soilNutrients: '19:21:46',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -95,8 +103,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Alluvial soil",
-    soilPh: "4.1 - 5.9",
+    soilPh: "5.0 - 6.5",
     availableWaterBodies: "Ezioha dam",
+    soilNutrients: '15:14:38',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -106,8 +115,9 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "Shallow lithosol soil",
-    soilPh: "4.1 - 5.9",
+    soilPh: "5.0 - 6.5",
     availableWaterBodies: "Mmamu River,Mmaku",
+    soilNutrients: '7:11:17',
     tractability: "loading...",
   ),
   LocationCityDetails(
@@ -117,8 +127,21 @@ final List<LocationCityDetails> locationDetailsItems = <LocationCityDetails>[
     rainfall: 'loading..',
     temperature: 'loading...',
     soilType: "shallow lithosol soil",
-    soilPh: "3.8 - 5.4",
+    soilPh: "5.0 - 6.0",
+    soilNutrients: '8:12:17',
     availableWaterBodies: "Ezioha dam",
+    tractability: "loading...",
+  ),
+  LocationCityDetails(
+    id: 9,
+    currentcity: "Oweli",
+    markets: " Nkwo Oweli",
+    rainfall: 'loading..',
+    temperature: 'loading...',
+    soilType: "Sandy clay loam soil",
+    soilPh: "5.0 - 6.0",
+    soilNutrients: '8:9:24',
+    availableWaterBodies: "Iyi Ndi Amabo",
     tractability: "loading...",
   ),
 ];

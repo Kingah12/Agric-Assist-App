@@ -205,23 +205,24 @@
 //     );
 //   }
 // }
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+
 import '../model/article_view.dart';
 import '../model/category_article.dart';
 import '../model/category_model.dart';
 import '../model/category_news.dart';
-import '../model/news_data.dart';
 import '../model/news_model.dart';
+import 'News_datas/news_data.dart';
 
-class AgroNews extends StatefulWidget {
-  const AgroNews({Key? key}) : super(key: key);
+class Agro_Jobs_services extends StatefulWidget {
+  const Agro_Jobs_services({Key? key}) : super(key: key);
 
   @override
-  _AgroNewsState createState() => _AgroNewsState();
+  _Agro_Jobs_servicesState createState() => _Agro_Jobs_servicesState();
 }
 
-class _AgroNewsState extends State<AgroNews> {
+class _Agro_Jobs_servicesState extends State<Agro_Jobs_services> {
   List<CategoryModel> categoryModel = getCategoryNews();
 
   List<NewsArticle> newsArticle = <NewsArticle>[];
@@ -234,6 +235,7 @@ class _AgroNewsState extends State<AgroNews> {
     getNews();
   }
 
+  ///get news function
   getNews() async {
     NewsData newsClass = NewsData();
     await newsClass.getNewsArticle();
@@ -246,6 +248,8 @@ class _AgroNewsState extends State<AgroNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+        ///app bar
         appBar: AppBar(
           leading: InkWell(
             onTap: () {
@@ -261,17 +265,22 @@ class _AgroNewsState extends State<AgroNews> {
           centerTitle: false,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text(
+            children: [
+              SizedBox(
+                  width: 50, height: 50, child: Image.asset('assets/icon.png')),
+              const SizedBox(
+                width: 5,
+              ),
+              const Text(
                 'Agro',
                 style:
                     TextStyle(color: Colors.black, fontWeight: FontWeight.w800),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
-              Text(
-                'News',
+              const Text(
+                'Services/Jobs',
                 style: TextStyle(
                   color: Colors.green,
                   fontWeight: FontWeight.w800,
@@ -285,6 +294,8 @@ class _AgroNewsState extends State<AgroNews> {
             )
           ],
         ),
+
+        ///body
         body: _loadng
             ? const Center(
                 child: CircularProgressIndicator(
@@ -294,6 +305,7 @@ class _AgroNewsState extends State<AgroNews> {
                 child: Container(
                     child: Column(
                   children: [
+                    ///category model
                     Container(
                       height: 70,
                       child: ListView.builder(
@@ -305,9 +317,11 @@ class _AgroNewsState extends State<AgroNews> {
                               title: categoryModel[index].title,
                               category: categoryModel[index].title)),
                     ),
+
+                    ///news body
                     Container(
                       // height: 10,
-                      margin: EdgeInsets.symmetric(vertical: 10),
+                      margin: const EdgeInsets.symmetric(vertical: 10),
                       child: ListView.builder(
                           physics: const ClampingScrollPhysics(),
                           itemCount: newsArticle.length,

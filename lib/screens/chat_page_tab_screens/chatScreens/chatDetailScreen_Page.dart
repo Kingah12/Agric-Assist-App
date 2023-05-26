@@ -1,21 +1,29 @@
 import 'dart:ui';
 
-import 'package:agro_assist/screens/chat_page_tab_screens/chatScreens/calls_pages/video_calls.dart';
+import 'package:agro_assist/allProviders/settings_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
-import '../../../models_auths/models.dart';
-import '../../../splash_screen.dart';
+import '../../../allProviders/models.dart';
+import '../../log_in.dart';
+import 'calls_pages/video_calls.dart';
 import 'calls_pages/voice_calls.dart';
 
 class ChatDetailScreen_Page extends StatefulWidget {
   final String friendUid;
   final String friendName;
+  final String friendImage;
   const ChatDetailScreen_Page(
-      {Key? key, required this.friendUid, required this.friendName})
+      {Key? key,
+      required this.friendUid,
+      required this.friendName,
+      required this.friendImage})
       : super(key: key);
 
   @override
@@ -26,6 +34,7 @@ class _ChatDetailScreen_PageState extends State<ChatDetailScreen_Page> {
   CollectionReference chatRefs = FirebaseFirestore.instance.collection('chats');
   final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
   var chatDocId;
+  String status = '';
   String? currentUserNickName;
   sendMessage(String msg) {
     if (messageController.text.isEmpty) return null;
@@ -62,6 +71,18 @@ class _ChatDetailScreen_PageState extends State<ChatDetailScreen_Page> {
 
   TextEditingController messageController = TextEditingController();
 
+  ZegoSendCallInvitationButton callActionButtons(bool isVideo) {
+    return ZegoSendCallInvitationButton(
+      isVideoCall: isVideo,
+      resourceID: "zegouikit_call",
+      buttonSize: const Size(45, 45),
+      iconSize: const Size(40, 40),
+      invitees: [
+        ZegoUIKitUser(id: widget.friendUid, name: widget.friendName),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,10 +100,14 @@ class _ChatDetailScreen_PageState extends State<ChatDetailScreen_Page> {
           ),
         ),
         centerTitle: false,
+
+        /// user name and status
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CircleAvatar(child: Icon(Icons.person)),
+            CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(widget.friendImage),
+            ),
             const SizedBox(width: 7),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +118,7 @@ class _ChatDetailScreen_PageState extends State<ChatDetailScreen_Page> {
                   style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16),
+                      fontSize: 14.5),
                 ),
                 const SizedBox(height: 0.5),
 
@@ -122,74 +147,63 @@ class _ChatDetailScreen_PageState extends State<ChatDetailScreen_Page> {
         ),
         actions: [
           ///voice call Icon
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(auth.currentUser!.uid)
-                  .snapshots(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return VoiceCallPage(
-                          callID: '123',
-                          userId: Models().currentUserUid,
-                          userName: snapshot.data['nickname'],
-                        );
-                      }));
-                    },
-                    child: const Icon(
-                      Icons.call_outlined,
-                      color: Colors.lightGreen,
-                    ),
-                  );
-                }
-
-                return Container();
-              }),
-          const SizedBox(width: 20),
+          IconButton(
+            onPressed: () {
+              // callActionButtons(false);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => VoiceCallPage(
+                            callID: '2',
+                            userName: widget.friendName,
+                            userId: widget.friendUid,
+                          )));
+            },
+            icon: const CircleAvatar(
+                radius: 45,
+                backgroundColor: Colors.green,
+                child: Icon(
+                  Icons.call_rounded,
+                  color: Colors.white,
+                )),
+            color: Colors.green,
+          ),
+          // const SizedBox(width: 2),
+          // callActionButtons(
+          //   false,
+          // ),
+          const SizedBox(width: 2),
 
           ///video call icon
-          // ZegoStartCallInvitationButton(
-          //   onPressed: () {},
-          //   isVideoCall: true,
-          //   invitees: [
-          //     ZegoUIKitUser(
-          //       id: targetUserID,
-          //       name: targetUserName,
-          //     ),
-          //   ],
-          // ),
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(auth.currentUser!.uid)
-                  .snapshots(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return VideoCallsPage(
-                          callID: '123',
-                          userId: Models().currentUserUid,
-                          userName: snapshot.data['nickname'],
-                        );
-                      }));
-                    },
-                    child: const Icon(
-                      Icons.video_camera_front_rounded,
-                      color: Colors.lightGreen,
-                    ),
-                  );
-                }
 
-                return Container();
-              }),
-          const SizedBox(width: 15),
+          IconButton(
+            onPressed: () {
+              // callActionButtons(true);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => videoCallPage(
+                            callID: '2',
+                            userName: widget.friendName,
+                            userId: widget.friendUid,
+                          )));
+            },
+            icon: const CircleAvatar(
+              radius: 45,
+              backgroundColor: Colors.green,
+              child: Icon(
+                Icons.video_call_rounded,
+                color: Colors.white,
+              ),
+            ),
+            color: Colors.green,
+          ),
+
+          ///
+          // callActionButtons(
+          //   true,nmbchjbxlkcvjbZKJVbKJZLchkjzLXNC
+          // ),
+          const SizedBox(width: 0.5),
         ],
       ),
 
@@ -221,6 +235,8 @@ class _ChatDetailScreen_PageState extends State<ChatDetailScreen_Page> {
                 filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
                 child: Column(
                   children: [
+                    // callActionButtons(true),
+
                     ///message body
                     data == null
                         ? Expanded(
@@ -361,7 +377,8 @@ class _ChatDetailScreen_PageState extends State<ChatDetailScreen_Page> {
 
                     ///textField for sending messages
                     Container(
-                      margin: EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                      margin: const EdgeInsets.only(
+                          bottom: 10, right: 10, left: 10),
                       alignment: Alignment.bottomCenter,
                       color: Colors.transparent,
                       child: Stack(

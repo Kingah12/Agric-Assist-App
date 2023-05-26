@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import 'News_datas/news_data.dart';
 import 'article_view.dart';
-import 'news_data.dart';
 import 'news_model.dart';
 
 class NewCategoryArticle extends StatefulWidget {
