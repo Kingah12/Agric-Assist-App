@@ -1,11 +1,13 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import '../../models_auths/models.dart';
+import '../../allProviders/models.dart';
 import '../log_in.dart';
 
 class Chats extends StatefulWidget {
@@ -17,6 +19,34 @@ class Chats extends StatefulWidget {
 
 class _ChatsState extends State<Chats> {
   String currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUsersDetails();
+  }
+
+  String currentUsersUserName = '';
+  String getUserProfilePic = '';
+
+  ///getting current users username
+  getCurrentUsersDetails() {
+    final firestore = FirebaseFirestore.instance;
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    ///fetching userData
+    firestore.collection('users').doc(currentUser!.uid).get().then((value) {
+      var fields = value.data();
+      setState(() {
+        currentUsersUserName = fields!['nickname'];
+        getUserProfilePic = fields['photoUrl'];
+      });
+    });
+    // Provider.of<Models>(context, listen: false)
+    //     .setUserName(currentUsersUserName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -25,14 +55,23 @@ class _ChatsState extends State<Chats> {
           backgroundColor: Colors.grey[200],
           automaticallyImplyLeading: false,
           expandedHeight: 100,
-          flexibleSpace: const FlexibleSpaceBar(
+          flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.parallax,
-            title: Text(
-              'Chats',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+            title: Row(
+              children: [
+                SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Image.asset('assets/icon.png')),
+                const SizedBox(width: 10),
+                const Text(
+                  'Chats',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
             // background: Colors.red,
           ),
@@ -116,7 +155,7 @@ class _ChatsState extends State<Chats> {
                                       MediaQuery.of(context).size.height / 2.5,
                                 ),
                                 Text(
-                                  'You have no chat availabled!',
+                                  'You have no chat available!',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.grey[500],
@@ -140,11 +179,17 @@ class _ChatsState extends State<Chats> {
                                               Models().callChatScreen_Page(
                                                   context,
                                                   user,
-                                                  snapshot.data!['nickname']);
+                                                  snapshot.data!['nickname'],
+                                                  snapshot.data['photoUrl']);
                                             },
                                             leading: Stack(
                                               children: [
-                                                const CircleAvatar(),
+                                                CircleAvatar(
+                                                  backgroundImage:
+                                                      CachedNetworkImageProvider(
+                                                          snapshot.data[
+                                                              'photoUrl']),
+                                                ),
                                                 Positioned(
                                                   top: 1,
                                                   right: 1,

@@ -6,10 +6,12 @@ import 'package:agro_assist/screens/progress_dialog.dart';
 import 'package:agro_assist/screens/welcome_page.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,7 +62,7 @@ class _SignUpState extends State<SignUp> {
                   padding: EdgeInsets.only(
                       left: 10.0, top: 0, bottom: 12, right: 20),
                   child: Text(
-                    'Welcome to Agro Assist',
+                    'Welcome to AgricassistApp',
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w900,
@@ -71,7 +73,7 @@ class _SignUpState extends State<SignUp> {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
                   child: Text(
-                    'Agro Assist is an Agricultural Mechanization Data Base and Expert Advisor developed by Precision/ E-Agriculture Research Group funded by TETfund'
+                    'AgricassistApp is an Agricultural Mechanization Data Base and Expert Advisor developed by Precision/ E-Agriculture Research Group funded by TETfund'
                     ' National Research Fund 2020 stream. We shall provide you with data and advice to guide you in mechanization of your farm in'
                     ' Awgu L.G.A of Enugu State, Nigeria.',
                     style: TextStyle(
@@ -105,7 +107,7 @@ class _SignUpState extends State<SignUp> {
                                   const BorderRadius.all(Radius.circular(40))),
                           child: Center(
                               child: Text(
-                            'Proceed'.tr(),
+                            'Proceed'.tr,
                             style: const TextStyle(
                                 color: Colors.white,
                                 letterSpacing: 1.2,
@@ -129,7 +131,7 @@ class _SignUpState extends State<SignUp> {
                 textFields(),
                 signUpButton(),
                 const SizedBox(height: 30),
-                googleSignIn(),
+                // googleSignIn(),
                 signInButton(),
                 emmanuelMuyiwa(),
               ],
@@ -145,7 +147,7 @@ class _SignUpState extends State<SignUp> {
           AnimatedTextKit(
             animatedTexts: [
               TypewriterAnimatedText(
-                'Create Account'.tr(),
+                'Create Account'.tr,
                 textStyle:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
               ),
@@ -167,21 +169,21 @@ class _SignUpState extends State<SignUp> {
       child: Column(
         children: [
           textField(
-              'Enter Nickname',
+              'Enter nickname'.tr,
               _nickName,
               const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
               null,
               false),
           const SizedBox(height: 20),
           textField(
-              "Enter email",
+              "Enter email".tr,
               _email,
               const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
               null,
               false),
           const SizedBox(height: 20),
           textField(
-              "Enter password",
+              "Enter password".tr,
               _password,
               const TextStyle(
                 fontWeight: FontWeight.w700,
@@ -250,7 +252,7 @@ class _SignUpState extends State<SignUp> {
           Row(
             children: [
               Text(
-                'Sign Up'.tr(),
+                'Sign Up'.tr,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -301,7 +303,7 @@ class _SignUpState extends State<SignUp> {
             height: 10,
           ),
           Text(
-            'or'.tr(),
+            'or'.tr,
             style: const TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -349,8 +351,8 @@ class _SignUpState extends State<SignUp> {
                 width: 10,
               ),
               Text(
-                'Sign In'.tr(),
-                style: TextStyle(
+                'Sign In'.tr,
+                style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
                     fontSize: 22),
@@ -377,14 +379,14 @@ class _SignUpState extends State<SignUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Have an account?".tr(),
+                "Have an account?".tr,
                 style: kstyle,
               ),
               const SizedBox(
                 width: 7,
               ),
               Text(
-                "Sign In".tr(),
+                "Sign In".tr,
                 style: kstyle,
               ),
             ],
@@ -399,7 +401,7 @@ class _SignUpState extends State<SignUp> {
       padding: EdgeInsets.only(top: 100.0, bottom: 10),
       child: Center(
           child: Text(
-        'powered by emmanuelmuyiwa19@gmail.com\n09022925316'.tr(),
+        'powered by emmanuelmuyiwa19@gmail.com\n09022925316'.tr,
         style: const TextStyle(color: Colors.black12),
       )),
     );
@@ -407,6 +409,7 @@ class _SignUpState extends State<SignUp> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  ///register new user
   void registerNewUser(BuildContext context) async {
     showDialog(
         context: context,
@@ -415,6 +418,7 @@ class _SignUpState extends State<SignUp> {
           return const ProgressDialog();
         });
     //creating user with email and password using firebase auth
+    String photoUrl = await storeImageFileToStorage(File(timeLineImage!.path));
     final User? _user = (await _auth
             .createUserWithEmailAndPassword(
                 email: _email.text, password: _password.text)
@@ -425,37 +429,29 @@ class _SignUpState extends State<SignUp> {
         .user;
 
     //adding user to firestore
-    if (_user != null) {
-      users
-          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-          .limit(1)
-          .get()
-          .then((QuerySnapshot snapShot) {
-        if (snapShot.docs.isEmpty) {
-          users.doc(FirebaseAuth.instance.currentUser!.uid).set({
-            "email": _email.text.trim(),
-            "password": _password.text.trim(),
-            "createdAt": DateTime.now(),
-            "nickname": _nickName.text.trim(),
-            "status": 'online',
-            FirestoreConstants.photoUrl: timeLineImage!.toString(),
-            'uid': FirebaseAuth.instance.currentUser!.uid,
-          }).then((value) {
-            //display success signedUp
-            displayToast(context, 'You have signed Up successfully',
-                Colors.green, Colors.white);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) {
-                return const WelcomePage();
-              }),
-            );
-          }).catchError((e) {
-            Navigator.pop(context);
-            displayToast(context, '${e.code}', Colors.red, Colors.white);
-          });
-        }
-      }).catchError((error) {});
+    if (_user != null && photoUrl != null) {
+      users.doc(FirebaseAuth.instance.currentUser!.uid).set({
+        "email": _email.text.trim(),
+        "password": _password.text.trim(),
+        "createdAt": DateTime.now(),
+        "nickname": _nickName.text.trim(),
+        "status": 'online',
+        FirestoreConstants.photoUrl: photoUrl,
+        'uid': FirebaseAuth.instance.currentUser!.uid,
+      }).then((value) {
+        //display success signedUp
+        displayToast(context, 'You have signed Up successfully', Colors.green,
+            Colors.white);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return const WelcomePage();
+          }),
+        );
+      }).catchError((e) {
+        Navigator.pop(context);
+        displayToast(context, '${e.code}', Colors.red, Colors.white);
+      });
     } else {
       Navigator.pop(context);
       displayToast(
@@ -590,6 +586,19 @@ class _SignUpState extends State<SignUp> {
       displayToast(context, "$e", Colors.black54, Colors.white);
     }
   }
+}
+
+///storePostImage
+storeImageFileToStorage(File? file) async {
+  final metaData = SettableMetadata(contentType: 'image/jpeg');
+  final storageRef = FirebaseStorage.instance.ref();
+  Reference reference =
+      storageRef.child('image/${DateTime.now().microsecondsSinceEpoch}.jpeg');
+  final uploadTask = reference.putFile(file!, metaData);
+
+  final taskSnapshot = await uploadTask.whenComplete(() => null);
+  String url = await taskSnapshot.ref.getDownloadURL();
+  return url;
 }
 
 const kstyle =

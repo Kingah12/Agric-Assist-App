@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:agro_assist/screens/Local_news_pages/local_news_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class _LocalNewsState extends State<LocalNews> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+
+        ///back button
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -30,6 +33,8 @@ class _LocalNewsState extends State<LocalNews> {
             color: Colors.black,
           ),
         ),
+
+        ///title
         title: Row(
           children: [
             SizedBox(
@@ -47,7 +52,7 @@ class _LocalNewsState extends State<LocalNews> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('localNews').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             displayToast(context, 'please check your network connection',
                 Colors.black26, Colors.white);
@@ -55,25 +60,23 @@ class _LocalNewsState extends State<LocalNews> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const shimmerEffectLocalNotifications();
           }
-          if (!snapshot.hasData) {
-            displayToast(context, 'please wait for more news from agro assist',
-                Colors.black, Colors.white);
-            return Container(
-              decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  image: const DecorationImage(
-                      filterQuality: FilterQuality.high,
-                      image: AssetImage('assets/icon.png'))),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+          if (snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Text(
+                'No Government news available, \nplease check back again!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700),
               ),
             );
           }
           if (snapshot.hasData) {
             return ListView(
                 shrinkWrap: true,
-                children:
-                    snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
+                children: snapshot.data!.docs
+                    .map<Widget>((DocumentSnapshot document) {
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
                   var image = NetworkImage(data['image']);
@@ -104,7 +107,10 @@ class _LocalNewsState extends State<LocalNews> {
                             height: 100,
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: image, fit: BoxFit.cover),
+                                    image: CachedNetworkImageProvider(
+                                      data['image'],
+                                    ),
+                                    fit: BoxFit.cover),
                                 borderRadius: BorderRadius.circular(20)),
                           ),
                           Expanded(
@@ -133,12 +139,12 @@ class _LocalNewsState extends State<LocalNews> {
                                             fontSize: 13,
                                             color: Colors.black45),
                                       ),
-                                      const Spacer(),
+                                      const SizedBox(width: 5),
                                       Text(
                                         data['time'],
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 12,
+                                            fontSize: 13,
                                             color: Colors.black45),
                                       ),
                                     ],
@@ -167,212 +173,214 @@ class shimmerEffectLocalNotifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  width: 200,
-                  height: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey[200]),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 200,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey[200]),
+                  ),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 10),
-                    child: Container(
-                      width: 200,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 10),
+                      child: Container(
+                        width: 200,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 150,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 150,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 100,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
+                  ],
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 200,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey[200]),
                   ),
-                ],
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  width: 200,
-                  height: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey[200]),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 10),
-                    child: Container(
-                      width: 200,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 10),
+                      child: Container(
+                        width: 200,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 150,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 150,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 100,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
+                  ],
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 200,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey[200]),
                   ),
-                ],
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  width: 200,
-                  height: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey[200]),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 10),
-                    child: Container(
-                      width: 200,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 10),
+                      child: Container(
+                        width: 200,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 150,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 150,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 100,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
+                  ],
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 200,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.grey[200]),
                   ),
-                ],
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  width: 200,
-                  height: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey[200]),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 10),
-                    child: Container(
-                      width: 200,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 10),
+                      child: Container(
+                        width: 200,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 150,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 150,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Container(
-                      width: 100,
-                      height: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.grey[200]),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 20),
+                      child: Container(
+                        width: 100,
+                        height: 10,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200]),
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ],
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

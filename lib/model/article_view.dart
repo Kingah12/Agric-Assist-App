@@ -15,9 +15,11 @@ class _ArticleViewState extends State<ArticleView> {
   final Completer<WebViewController> _completer =
       Completer<WebViewController>();
   int? prog;
+  double webProgress = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      ///app bar
       appBar: AppBar(
         leading: InkWell(
           onTap: () {
@@ -33,7 +35,12 @@ class _ArticleViewState extends State<ArticleView> {
         centerTitle: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
+            SizedBox(
+                width: 50, height: 50, child: Image.asset('assets/icon.png')),
+            const SizedBox(
+              width: 5,
+            ),
             Text(
               'Agro',
               style:
@@ -57,14 +64,38 @@ class _ArticleViewState extends State<ArticleView> {
           )
         ],
       ),
+
+      ///body
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: WebView(
-          initialUrl: widget.url,
-          onWebViewCreated: ((WebViewController webViewController) {
-            _completer.complete(webViewController);
-          }),
+        child: Column(
+          children: [
+            webProgress < 1
+                ? SizedBox(
+                    height: 5,
+                    child: LinearProgressIndicator(
+                      value: webProgress,
+                      color: Colors.green,
+                      backgroundColor: Colors.black,
+                    ),
+                  )
+                : const SizedBox(),
+            Expanded(
+              child: WebView(
+                javascriptMode: JavascriptMode.unrestricted,
+                initialUrl: widget.url,
+                onWebViewCreated: ((WebViewController webViewController) {
+                  _completer.complete(webViewController);
+                }),
+                onProgress: (progress) {
+                  setState(() {
+                    this.webProgress = progress / 100;
+                  });
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

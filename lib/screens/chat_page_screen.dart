@@ -189,15 +189,19 @@
 //   }
 // }
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 import 'chat_page_tab_screens/calls.dart';
 import 'chat_page_tab_screens/chats.dart';
 import 'chat_page_tab_screens/people.dart';
 
 class ChatPageScreen extends StatefulWidget {
-  const ChatPageScreen({Key? key}) : super(key: key);
+  final String userName;
+  const ChatPageScreen({Key? key, required this.userName}) : super(key: key);
 
   @override
   _ChatPageScreenState createState() => _ChatPageScreenState();
@@ -212,6 +216,36 @@ class _ChatPageScreenState extends State<ChatPageScreen> {
 
     // const ChatSettings(),
   ];
+
+  String currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    onUserLogin();
+  }
+
+  void onUserLogin() {
+    /// 2.1. initialized ZegoUIKitPrebuiltCallInvitationService
+    /// when app's user is logged in or re-logged in
+    /// We recommend calling this method as soon as the user logs in to your app.
+    ZegoUIKitPrebuiltCallInvitationService().init(
+        notifyWhenAppRunningInBackgroundOrQuit: true,
+        // appID: 712545703,
+        appID: 1014199522,
+        appSign:
+            "379c89c11ea67772f36569337f0854e975028daed1f12073c6bb42eb5b4a1fc8",
+//4696660010779629
+        //251
+        // or
+        //257
+        // appSign:
+        //     "c3c2e49f6352bccd98cb45d7460fcba7ccc50f57a336ed0a7ef70eac8177f023",
+        userID: currentUserUid,
+        userName: widget.userName,
+        // child: widget.child,
+        plugins: [ZegoUIKitSignalingPlugin()]);
+  }
 
   @override
   Widget build(BuildContext context) {

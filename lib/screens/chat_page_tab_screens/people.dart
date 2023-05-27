@@ -1,9 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../models_auths/models.dart';
+import '../../allProviders/models.dart';
 import '../../splash_screen.dart';
 import '../chat_details.dart';
 import '../log_in.dart';
@@ -38,6 +39,7 @@ class _PeopleState extends State<People> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
     setStatus('online');
+    getCurrentUsersUserName();
   }
 
   void setStatus(String status) async {
@@ -60,6 +62,24 @@ class _PeopleState extends State<People> with WidgetsBindingObserver {
     }
   }
 
+  String currentUsersUserName = '';
+
+  ///getting current users username
+  Future<void> getCurrentUsersUserName() async {
+    final firestore = FirebaseFirestore.instance;
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    ///fetching userType Data eg: user or recruiter
+    await firestore.collection('users').doc(currentUserUid).get().then((value) {
+      var fields = value.data();
+      setState(() {
+        currentUsersUserName = fields!['nickname'];
+      });
+    });
+    // Provider.of<Models>(context, listen: false)
+    //     .setUserName(currentUsersUserName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -68,14 +88,23 @@ class _PeopleState extends State<People> with WidgetsBindingObserver {
           backgroundColor: Colors.grey[200],
           automaticallyImplyLeading: false,
           expandedHeight: 100,
-          flexibleSpace: const FlexibleSpaceBar(
+          flexibleSpace: FlexibleSpaceBar(
             collapseMode: CollapseMode.parallax,
-            title: Text(
-              'People',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+            title: Row(
+              children: [
+                SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Image.asset('assets/icon.png')),
+                const SizedBox(width: 10),
+                const Text(
+                  'People',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
             ),
             // background: Colors.red,
           ),
@@ -108,12 +137,15 @@ class _PeopleState extends State<People> with WidgetsBindingObserver {
                       ListTile(
                         onTap: () {
                           Models().callChatScreen_Page(
-                              context,
-                              data[index]["uid"].toString(),
-                              data[index]["nickname"].toString());
+                            context,
+                            data[index]["uid"].toString(),
+                            data[index]["nickname"].toString(),
+                            data[index]['photoUrl'].toString(),
+                          );
                         },
-                        leading: const CircleAvatar(
-                          child: Icon(Icons.person),
+                        leading: CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                              data[index]['photoUrl'].toString()),
                         ),
                         subtitle: Text(data[index]['status']),
                         title: Text(data[index]['nickname']),

@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../models_auths/models.dart';
+import '../../allProviders/models.dart';
 import '../log_in.dart';
+import 'chatScreens/calls_pages/voice_calls.dart';
 
 class Calls extends StatelessWidget {
   @override
@@ -13,14 +15,23 @@ class Calls extends StatelessWidget {
                 backgroundColor: Colors.grey[200],
                 automaticallyImplyLeading: false,
                 expandedHeight: 100,
-                flexibleSpace: const FlexibleSpaceBar(
+                flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
-                  title: Text(
-                    'Calls',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                  title: Row(
+                    children: [
+                      SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: Image.asset('assets/icon.png')),
+                      const SizedBox(width: 10),
+                      const Text(
+                        'Calls',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                   // background: Colors.red,
                 ),
@@ -53,12 +64,25 @@ class Calls extends StatelessWidget {
                       children: [
                         ListTile(
                           onTap: () {
-                            Models().callChatScreen_Page(
+                            // Models().callChatScreen_Page(
+                            //     context,
+                            //     data[index]["uid"].toString(),
+                            //     data[index]["nickname"].toString(),
+                            //     data[index]['photoUrl']);
+                            Navigator.push(
                                 context,
-                                data[index]["uid"].toString(),
-                                data[index]["nickname"].toString());
+                                MaterialPageRoute(
+                                    builder: (context) => VoiceCallPage(
+                                          callID: '2',
+                                          userName: data[index]["nickname"]
+                                              .toString(),
+                                          userId: data[index]["uid"].toString(),
+                                        )));
                           },
-                          leading: const CircleAvatar(),
+                          leading: CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(
+                                data[index]['photoUrl']),
+                          ),
                           subtitle: Text(data[index]['status']),
                           title: Text(data[index]['nickname']),
                           trailing: Column(

@@ -2,12 +2,13 @@ import 'package:agro_assist/screens/sign_up.dart';
 import 'package:agro_assist/screens/welcome_page.dart';
 import 'package:agro_assist/select_location_page.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../main.dart';
@@ -44,7 +45,7 @@ class _Log_InState extends State<Log_In> {
                   padding: EdgeInsets.only(
                       left: 10.0, top: 0, bottom: 12, right: 20),
                   child: Text(
-                    'Welcome to Agro Assist',
+                    'Welcome to AgricassistApp',
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w900,
@@ -55,7 +56,7 @@ class _Log_InState extends State<Log_In> {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
                   child: Text(
-                    'Agro Assist is an Agricultural Mechanization Data Base and Expert Advisor developed by Precision/ E-Agriculture Research Group funded by TETfund'
+                    'AgricassistApp is an Agricultural Mechanization Data Base and Expert Advisor developed by Precision/ E-Agriculture Research Group funded by TETfund'
                     ' National Research Fund 2020 stream. We shall provide you with data and advice to guide you in mechanization of your farm in'
                     ' Awgu L.G.A of Enugu State, Nigeria.',
                     style: TextStyle(
@@ -108,7 +109,8 @@ class _Log_InState extends State<Log_In> {
                 ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        context.setLocale(const Locale("en"));
+                        // context.setLocale(const Locale("en"));
+                        Get.updateLocale(Locale('en', 'US'));
                       });
                     },
                     child: const Text(
@@ -118,19 +120,35 @@ class _Log_InState extends State<Log_In> {
                 ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        context.setLocale(const Locale("ig"));
+                        // context.setLocale(const Locale("ig"));
+                        Get.updateLocale(Locale('ig', 'NG'));
                       });
                     },
                     child: const Text(
                       'Igbo',
                       style: TextStyle(color: Colors.white),
                     )),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       setState(() {
+                //         // context.setLocale(const Locale("ig"));
+                //         // Get.updateLocale(Locale('ig', 'NG'));
+                //         Navigator.push(context,
+                //             MaterialPageRoute(builder: (context) {
+                //           return const AgNewsWebScrape();
+                //         }));
+                //       });
+                //     },
+                //     child: const Text(
+                //       'web.S',
+                //       style: TextStyle(color: Colors.white),
+                //     )),
                 welcomeBack(),
                 const SizedBox(height: 10),
                 textFields(),
                 signInButton(),
                 const SizedBox(height: 30),
-                googleSignIn(),
+                // googleSignIn(),
                 signUpButton(),
                 emmanuelMuyiwa(),
               ],
@@ -144,9 +162,10 @@ class _Log_InState extends State<Log_In> {
       child: Row(
         children: [
           AnimatedTextKit(
+            isRepeatingAnimation: false,
             animatedTexts: [
               TypewriterAnimatedText(
-                'Welcome_Back'.tr(),
+                'Welcome_Back'.tr,
                 textStyle:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
               ),
@@ -168,14 +187,14 @@ class _Log_InState extends State<Log_In> {
       child: Column(
         children: [
           textField(
-              "Enter email".tr(),
+              "Enter email".tr,
               _email,
               const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
               null,
               false),
           const SizedBox(height: 20),
           textField(
-              "Enter password".tr(),
+              "Enter password".tr,
               _password,
               const TextStyle(
                 fontWeight: FontWeight.w700,
@@ -244,7 +263,7 @@ class _Log_InState extends State<Log_In> {
           Row(
             children: [
               Text(
-                'Sign In'.tr(),
+                'Sign In'.tr,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -257,20 +276,24 @@ class _Log_InState extends State<Log_In> {
                   if (_email.text.isEmpty) {
                     displayToast(
                         context,
-                        'you need an email address to continue'.tr(),
+                        'you need an email address to continue'.tr,
                         Colors.red,
                         Colors.white);
                   } else if (!_email.text.contains("@")) {
-                    displayToast(context, 'email is badly formatted'.tr(),
+                    displayToast(context, 'email is badly formatted'.tr,
                         Colors.red, Colors.white);
                   } else if (_password.text.length < 6) {
                     displayToast(
                         context,
-                        'password must be more than 6 characters '.tr(),
+                        'password must be more than 6 characters '.tr,
                         Colors.red,
                         Colors.white);
                   } else {
                     signInUser(context);
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) {
+                    //   return WelcomePage();
+                    // }));
                   }
                 },
                 child: const CircleAvatar(
@@ -288,8 +311,8 @@ class _Log_InState extends State<Log_In> {
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            'or',
+          Text(
+            'or'.tr,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -306,7 +329,7 @@ class _Log_InState extends State<Log_In> {
       onTap: () {
         final gSignedIn = gSignIn.signIn().then((userData) {
           setState(() {
-            displayToast(context, "you have logged in successfully".tr(),
+            displayToast(context, "you have logged in successfully".tr,
                 Colors.green, Colors.white);
             _isLoggedIn = true;
             _userObj = userData;
@@ -357,7 +380,7 @@ class _Log_InState extends State<Log_In> {
                 width: 10,
               ),
               Text(
-                'Sign In'.tr(),
+                'Sign In'.tr,
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
@@ -384,14 +407,14 @@ class _Log_InState extends State<Log_In> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Dont' have an account?".tr(),
+              "Dont' have an account?".tr,
               style: kstyle,
             ),
             const SizedBox(
               width: 7,
             ),
             Text(
-              "Create one!".tr(),
+              "Create one!".tr,
               style: kstyle,
             ),
           ],
@@ -405,7 +428,7 @@ class _Log_InState extends State<Log_In> {
       padding: EdgeInsets.only(top: 100.0, bottom: 10),
       child: Center(
           child: Text(
-        'powered by emmanuelmuyiwa19@gmail.com\n09022925316'.tr(),
+        'powered by Rozu'.tr,
         style: const TextStyle(color: Colors.black12),
       )),
     );
@@ -429,8 +452,8 @@ class _Log_InState extends State<Log_In> {
         .user;
 
     if (_userDetails != null) {
-      displayToast(context, 'you have logged in successfully'.tr(),
-          Colors.green, Colors.white);
+      displayToast(context, 'you have logged in successfully'.tr, Colors.green,
+          Colors.white);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return const WelcomePage();
       }));
@@ -438,7 +461,7 @@ class _Log_InState extends State<Log_In> {
       Navigator.pop(context);
       auth.signOut().then((value) => displayToast(
           context,
-          'Please check your internet connectivity'.tr(),
+          'Please check your internet connectivity'.tr,
           Colors.red,
           Colors.white));
     }
@@ -464,7 +487,7 @@ const kAnimStyle = TextStyle(color: Colors.white, fontSize: 30);
 void signOut(context) async {
   await auth.signOut();
   final gSignOut = await gSignIn.signOut().then((value) {
-    displayToast(context, 'signed Out'.tr(), Colors.black54, Colors.white);
+    displayToast(context, 'signed Out'.tr, Colors.black54, Colors.white);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
       return const Log_In();
     }));
@@ -472,6 +495,6 @@ void signOut(context) async {
   await gSignIn.disconnect();
   if (gSignOut != null) {
     displayToast(
-        context, 'Signed Out Successfully'.tr(), Colors.black54, Colors.white);
+        context, 'Signed Out Successfully'.tr, Colors.black54, Colors.white);
   }
 }
